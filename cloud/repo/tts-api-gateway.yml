@@ -1,0 +1,27 @@
+platform:
+  security:
+    cors:
+      enabled: true
+      allowed-origin-patterns:
+        - http://localhost:5173
+
+spring:
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: tts-identity-service
+              uri: lb://tts-identity-service
+              predicates:
+                - Path=/identity/**
+
+            - id: tts-transform-service
+              uri: lb://tts-transform-service
+              predicates:
+                - Path=/transform/**
+
+            - id: tts-reports-service
+              uri: lb://tts-reports-service
+              predicates:
+                - Path=/reports/**

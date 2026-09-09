@@ -1,0 +1,9 @@
+database:
+    host: localhost
+    port: 5432
+    name: tts_identity
+
+eureka:
+    client:
+        webclient:
+            enabled: true
