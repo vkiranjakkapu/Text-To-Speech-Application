@@ -1,0 +1,18 @@
+database:
+    host: localhost
+    port: 5432
+    name: tts_transformer
+
+eureka:
+    client:
+        webclient:
+            enabled: true
+
+azure:
+    speech:
+        key: ${AZURE_SPEECH_KEY}
+        region: ${AZURE_SPEECH_REGION}
+        max-char-length: 200
+    storage:
+        connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
+        container-name: ${AZURE_STORAGE_CONTAINER}

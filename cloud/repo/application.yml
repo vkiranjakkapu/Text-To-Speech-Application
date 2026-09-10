@@ -8,7 +8,7 @@ management:
 services:
     uri:
         identity: http://tts-identity-service/identity/api/v1
-        transform: http://tts-transform-service/transform/api/v1
+        transform: http://tts-transformer-service/transform/api/v1
         reports: http://tts-reports-service/reports/api/v1
 
 eureka:

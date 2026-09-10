@@ -19,15 +19,15 @@ class ErrorResponseTest {
 		ErrorResponse response = new ErrorResponse();
 
 		assertEquals(
-				ValidationExceptions.APPLICATION_ERROR.getErrorName(),
+				WebExceptions.APPLICATION_ERROR.getErrorName(),
 				response.errorName());
 
 		assertEquals(
-				ValidationExceptions.APPLICATION_ERROR.getErrorCode(),
+				WebExceptions.APPLICATION_ERROR.getErrorCode(),
 				response.errorCode());
 
 		assertEquals(
-				ValidationExceptions.APPLICATION_ERROR.getErrorMessage(),
+				WebExceptions.APPLICATION_ERROR.getErrorMessage(),
 				response.errorMessage());
 
 		assertNotNull(response.timestamp());

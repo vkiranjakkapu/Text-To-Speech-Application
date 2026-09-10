@@ -2,14 +2,9 @@ package com.platform.web.exception;
 
 public enum ValidationExceptions implements ErrorDefinition {
 
-    APPLICATION_ERROR(
-            "APPLICATION_ERROR",
-            "APP-0000",
-            "Application error."),
-
     VALIDATION_ERROR(
             "VALIDATION_ERROR",
-            "VAL-2001",
+            "VAL-4001",
             "Validation failed.");
 
     private final String errorName;

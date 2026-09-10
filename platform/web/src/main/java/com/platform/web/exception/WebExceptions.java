@@ -2,6 +2,11 @@ package com.platform.web.exception;
 
 public enum WebExceptions implements ErrorDefinition {
 
+    APPLICATION_ERROR(
+            "APPLICATION_ERROR",
+            "APP-0000",
+            "Application error."),
+
     INTERNAL_SERVER_ERROR(
             "INTERNAL_SERVER_ERROR",
             "WEB-5000",
