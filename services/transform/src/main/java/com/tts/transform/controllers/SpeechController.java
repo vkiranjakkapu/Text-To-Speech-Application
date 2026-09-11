@@ -12,7 +12,7 @@ import com.tts.transform.dto.ApiResponse;
 import com.tts.transform.dto.SynthesizeRequest;
 import com.tts.transform.enums.BusinessExceptions;
 import com.tts.transform.exceptions.BusinessException;
-import com.tts.transform.properties.AzureSpeechProperties;
+import com.tts.transform.properties.DefaultProperties;
 import com.tts.transform.services.TtsProvider;
 import com.tts.transform.services.imp.SpeechServiceImp;
 
@@ -25,7 +25,7 @@ public class SpeechController {
 
     private final TtsProvider ttsProvider;
     private final SpeechServiceImp speechService;
-    private final AzureSpeechProperties properties;
+    private final DefaultProperties properties;
 
     @GetMapping("/voices")
     public ResponseEntity<ApiResponse> getVoices() {
@@ -36,9 +36,10 @@ public class SpeechController {
     public ResponseEntity<byte[]> synthesize(
             @RequestBody SynthesizeRequest request) {
 
-        if (request.text().length() > properties.maxCharLength()) {
+        if (request.text().length() > properties.getRequest().getMaxCharLength()) {
             throw new BusinessException(BusinessExceptions.MAX_LENGTH_EXCEEDED,
-                    "Input text can't exceed the length of " + properties.maxCharLength() + " characters.");
+                    "Input text can't exceed the length of " + properties.getRequest().getMaxCharLength()
+                            + " characters.");
         }
 
         byte[] audio = speechService.synthesize(request);

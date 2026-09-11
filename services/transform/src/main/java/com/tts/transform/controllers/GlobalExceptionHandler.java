@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SecurityException.class)
     public ResponseEntity<ErrorResponse> handleSecurityException(SecurityException e) {
-        e.printStackTrace();
+        Optional.ofNullable(e.getCause()).ifPresent(er -> er.printStackTrace());
         ErrorDefinition definition = Optional.ofNullable(e.getDefinition()).orElse(SecurityExceptions.FORBIDDEN_ACCESS);
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new ErrorResponse(definition,
@@ -28,9 +28,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-        e.printStackTrace();
+        Optional.ofNullable(e.getCause()).ifPresent(er -> er.printStackTrace());
         ErrorDefinition definition = Optional.ofNullable(e.getDefinition()).orElse(WebExceptions.APPLICATION_ERROR);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(Optional.ofNullable(e.getStatus()).orElse(HttpStatus.BAD_REQUEST))
                 .body(new ErrorResponse(definition,
                         Optional.ofNullable(e.getMessage()).orElse(definition.getErrorMessage())));
     }

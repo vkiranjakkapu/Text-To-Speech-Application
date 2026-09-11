@@ -6,9 +6,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 import com.tts.transform.properties.AzureSpeechProperties;
 import com.tts.transform.properties.AzureStorageProperties;
+import com.tts.transform.properties.DefaultProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties({ AzureSpeechProperties.class, AzureStorageProperties.class })
+@EnableConfigurationProperties({ DefaultProperties.class, AzureSpeechProperties.class, AzureStorageProperties.class })
 public class TransformApplication {
 
 	public static void main(String[] args) {

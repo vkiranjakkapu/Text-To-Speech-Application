@@ -12,7 +12,12 @@ azure:
     speech:
         key: ${AZURE_SPEECH_KEY}
         region: ${AZURE_SPEECH_REGION}
-        max-char-length: 200
     storage:
         connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
         container-name: ${AZURE_STORAGE_CONTAINER}
+
+app:
+    request:
+        max-char-length: 55
+    limits:
+        max-monthly-limit: 10000

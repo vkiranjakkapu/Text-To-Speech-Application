@@ -1,5 +1,7 @@
 package com.tts.transform.exceptions;
 
+import org.springframework.http.HttpStatus;
+
 import com.platform.web.exception.ErrorDefinition;
 
 import lombok.Getter;
@@ -10,6 +12,7 @@ import lombok.Setter;
 public class BusinessException extends RuntimeException {
 
     private ErrorDefinition definition;
+    private HttpStatus status;
 
     public BusinessException(String message) {
         super(message);
@@ -27,6 +30,17 @@ public class BusinessException extends RuntimeException {
     public BusinessException(ErrorDefinition definition, String message) {
         super(message);
         this.definition = definition;
+    }
+
+    public BusinessException(ErrorDefinition definition, HttpStatus status) {
+        this.definition = definition;
+        this.status = status;
+    }
+
+    public BusinessException(ErrorDefinition definition, String message, HttpStatus status) {
+        super(message);
+        this.definition = definition;
+        this.status = status;
     }
 
     public BusinessException(ErrorDefinition definition, String message, Throwable cause) {
