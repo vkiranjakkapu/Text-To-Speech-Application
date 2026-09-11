@@ -47,7 +47,11 @@ public class SpeechServiceImp {
         byte[] audio = ttsProvider.synthesize(
                 request.text(),
                 request.language(),
-                request.voice());
+                request.voice(),
+                request.style(),
+                request.rate(),
+                request.pitch(),
+                request.volume());
 
         String audioPath = storageService.upload(
                 audio,

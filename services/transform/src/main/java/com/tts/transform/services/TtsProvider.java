@@ -11,6 +11,10 @@ public interface TtsProvider {
     byte[] synthesize(
             String text,
             String language,
-            String voice);
+            String voice,
+            String style,
+            String rate,
+            String pitch,
+            String volume);
 
 }

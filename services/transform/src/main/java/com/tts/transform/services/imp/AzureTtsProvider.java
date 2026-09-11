@@ -22,73 +22,179 @@ import com.tts.transform.services.TtsProvider;
 @Service
 public class AzureTtsProvider implements TtsProvider {
 
-    private final AzureSpeechProperties properties;
-    private final RestClient restClient;
+	private final AzureSpeechProperties properties;
+	private final RestClient restClient;
 
-    public AzureTtsProvider(AzureSpeechProperties properties, RestClient restClient) {
-        this.properties = properties;
-        this.restClient = restClient;
-    }
+	public AzureTtsProvider(AzureSpeechProperties properties, RestClient restClient) {
+		this.properties = properties;
+		this.restClient = restClient;
+	}
 
-    @Override
-    public byte[] synthesize(
-            String text,
-            String language,
-            String voice) {
+	@Override
+	public byte[] synthesize(
+			String text,
+			String language,
+			String voice,
+			String style,
+			String rate,
+			String pitch,
+			String volume) {
 
-        SpeechConfig config = SpeechConfig.fromSubscription(
-                properties.key(),
-                properties.region());
+		SpeechConfig config = SpeechConfig.fromSubscription(
+				properties.key(),
+				properties.region());
 
-        config.setSpeechSynthesisLanguage(language);
-        config.setSpeechSynthesisVoiceName(voice);
+		config.setSpeechSynthesisLanguage(language);
+		config.setSpeechSynthesisVoiceName(voice);
 
-        config.setSpeechSynthesisOutputFormat(
-                SpeechSynthesisOutputFormat.Audio24Khz48KBitRateMonoMp3);
+		config.setSpeechSynthesisOutputFormat(
+				SpeechSynthesisOutputFormat.Audio24Khz48KBitRateMonoMp3);
 
-        try (SpeechSynthesizer synthesizer = new SpeechSynthesizer(config, null)) {
+		try (SpeechSynthesizer synthesizer = new SpeechSynthesizer(config, null)) {
 
-            SpeechSynthesisResult result = synthesizer.SpeakText(text);
+			String ssml = buildSsml(
+					text,
+					language,
+					voice,
+					style,
+					rate,
+					pitch,
+					volume);
 
-            if (result.getReason() == ResultReason.SynthesizingAudioCompleted) {
-                return result.getAudioData();
-            }
+			SpeechSynthesisResult result = synthesizer.SpeakSsml(ssml);
 
-            if (result.getReason() == ResultReason.Canceled) {
+			if (result.getReason() == ResultReason.SynthesizingAudioCompleted) {
+				return result.getAudioData();
+			}
 
-                SpeechSynthesisCancellationDetails details = SpeechSynthesisCancellationDetails.fromResult(result);
+			if (result.getReason() == ResultReason.Canceled) {
 
-                throw new BusinessException(BusinessExceptions.SYNTHESIS_ERROR,
-                        "Azure TTS cancelled: "
-                                + details.getReason()
-                                + " - "
-                                + details.getErrorDetails());
-            }
+				SpeechSynthesisCancellationDetails details = SpeechSynthesisCancellationDetails.fromResult(result);
 
-            throw new BusinessException(BusinessExceptions.SYNTHESIS_ERROR,
-                    "Azure TTS failed: " + result.getReason());
-        }
-    }
+				throw new BusinessException(
+						BusinessExceptions.SYNTHESIS_ERROR,
+						"Azure TTS cancelled: "
+								+ details.getReason()
+								+ " - "
+								+ details.getErrorDetails());
+			}
 
-    @Override
-    public List<VoiceDto> getVoices() {
+			throw new BusinessException(
+					BusinessExceptions.SYNTHESIS_ERROR,
+					"Azure TTS failed: " + result.getReason());
+		}
+	}
 
-        List<Map<String, Object>> body = restClient.get()
-                .uri("https://" + properties.region()
-                        + ".tts.speech.microsoft.com/cognitiveservices/voices/list")
-                .header("Ocp-Apim-Subscription-Key", properties.key())
-                .retrieve()
-                .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {
-                });
+	private String buildSsml(
+			String text,
+			String language,
+			String voice,
+			String style,
+			String rate,
+			String pitch,
+			String volume) {
 
-        return body.stream()
-                .map(voice -> VoiceDto.builder()
-                        .id((String) voice.get("ShortName"))
-                        .name((String) voice.get("DisplayName"))
-                        .language((String) voice.get("Locale"))
-                        .languageName((String) voice.get("LocaleName"))
-                        .gender((String) voice.get("Gender"))
-                        .build())
-                .toList();
-    }
+		StringBuilder ssml = new StringBuilder();
+
+		ssml.append("""
+				<speak version="1.0"
+				       xmlns="http://www.w3.org/2001/10/synthesis"
+				       xmlns:mstts="https://www.w3.org/2001/mstts"
+				       xml:lang="%s">
+				""".formatted(escapeXml(language)));
+
+		ssml.append("<voice name=\"")
+				.append(escapeXml(voice))
+				.append("\">");
+
+		boolean hasProsody = isPresent(rate)
+				|| isPresent(pitch)
+				|| isPresent(volume);
+
+		if (isPresent(style)) {
+			ssml.append("<mstts:express-as style=\"")
+					.append(escapeXml(style))
+					.append("\">");
+		}
+
+		if (hasProsody) {
+			ssml.append("<prosody");
+
+			if (isPresent(rate)) {
+				ssml.append(" rate=\"")
+						.append(escapeXml(rate))
+						.append("\"");
+			}
+
+			if (isPresent(pitch)) {
+				ssml.append(" pitch=\"")
+						.append(escapeXml(pitch))
+						.append("\"");
+			}
+
+			if (isPresent(volume)) {
+				ssml.append(" volume=\"")
+						.append(escapeXml(volume))
+						.append("\"");
+			}
+
+			ssml.append(">");
+		}
+
+		ssml.append(escapeXml(text));
+
+		if (hasProsody) {
+			ssml.append("</prosody>");
+		}
+
+		if (isPresent(style)) {
+			ssml.append("</mstts:express-as>");
+		}
+
+		ssml.append("</voice></speak>");
+
+		return ssml.toString();
+	}
+
+	private boolean isPresent(String value) {
+		return value != null && !value.isBlank();
+	}
+
+	private String escapeXml(String value) {
+		return value
+				.replace("&", "&amp;")
+				.replace("<", "&lt;")
+				.replace(">", "&gt;")
+				.replace("\"", "&quot;")
+				.replace("'", "&apos;");
+	}
+
+	@Override
+	public List<VoiceDto> getVoices() {
+
+		List<Map<String, Object>> body = restClient.get()
+				.uri("https://" + properties.region()
+						+ ".tts.speech.microsoft.com/cognitiveservices/voices/list")
+				.header("Ocp-Apim-Subscription-Key", properties.key())
+				.retrieve()
+				.body(new ParameterizedTypeReference<List<Map<String, Object>>>() {
+				});
+
+		return body.stream()
+				.map(voice -> VoiceDto.builder()
+						.id((String) voice.get("ShortName"))
+						.name((String) voice.get("DisplayName"))
+						.language((String) voice.get("Locale"))
+						.languageName((String) voice.get("LocaleName"))
+						.gender((String) voice.get("Gender"))
+						.styles(
+								voice.get("StyleList") instanceof List<?> list
+										? list.stream()
+												.filter(String.class::isInstance)
+												.map(String.class::cast)
+												.toList()
+										: List.of())
+						.build())
+				.toList();
+	}
 }
