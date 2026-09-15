@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tts.transform.dto.ApiResponse;
-import com.tts.transform.services.imp.SpeechServiceImp;
+import com.tts.transform.dto.ApiResponseDto;
+import com.tts.transform.services.SpeechHistoryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HistoryController {
 
-    private final SpeechServiceImp speechService;
+    private final SpeechHistoryService historyService;
 
     @GetMapping("/")
-    public ResponseEntity<ApiResponse> getMySpeechHistory() {
-        return ResponseEntity.ok(ApiResponse.builder().body(speechService.getMyHistory()).build());
+    public ResponseEntity<ApiResponseDto> getMySpeechHistory() {
+        return ResponseEntity.ok(ApiResponseDto.builder().body(historyService.getMyHistory()).build());
     }
 
 }

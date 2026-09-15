@@ -1,6 +1,9 @@
 package com.tts.transform.controllers;
 
+import java.util.Optional;
+
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,14 +11,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tts.transform.dto.ApiResponse;
+import com.tts.transform.dto.ApiResponseDto;
 import com.tts.transform.dto.SynthesizeRequest;
 import com.tts.transform.enums.BusinessExceptions;
+import com.tts.transform.enums.SynthesisType;
 import com.tts.transform.exceptions.BusinessException;
 import com.tts.transform.properties.DefaultProperties;
+import com.tts.transform.services.SpeechService;
 import com.tts.transform.services.TtsProvider;
-import com.tts.transform.services.imp.SpeechServiceImp;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -24,29 +29,44 @@ import lombok.RequiredArgsConstructor;
 public class SpeechController {
 
     private final TtsProvider ttsProvider;
-    private final SpeechServiceImp speechService;
+    private final SpeechService speechService;
     private final DefaultProperties properties;
 
     @GetMapping("/voices")
-    public ResponseEntity<ApiResponse> getVoices() {
-        return ResponseEntity.ok(ApiResponse.builder().body(ttsProvider.getVoices()).build());
+    public ResponseEntity<ApiResponseDto> getVoices() {
+        return ResponseEntity.ok(ApiResponseDto.builder().body(ttsProvider.getVoices()).build());
     }
 
     @PostMapping("/synthesize")
-    public ResponseEntity<byte[]> synthesize(
-            @RequestBody SynthesizeRequest request) {
+    public ResponseEntity<?> synthesize(@Valid @RequestBody SynthesizeRequest request) {
 
-        if (request.text().length() > properties.getRequest().getMaxCharLength()) {
-            throw new BusinessException(BusinessExceptions.MAX_LENGTH_EXCEEDED,
-                    "Input text can't exceed the length of " + properties.getRequest().getMaxCharLength()
-                            + " characters.");
+        if (request.text().length() < properties.getRequest().getMinTextLength()) {
+            throw new BusinessException(BusinessExceptions.MIN_LENGTH_REQUIRED,
+                    "Text for Synthesis should atleast be " + properties.getRequest().getMinTextLength()
+                            + " characters length.",
+                    HttpStatus.LENGTH_REQUIRED);
         }
 
-        byte[] audio = speechService.synthesize(request);
+        long maxLength = Optional.ofNullable(request.type()).map(type -> {
+            if (type.equals(SynthesisType.DOCUMENT)) {
+                return properties.getRequest().getMaxDoctextLength();
+            } else {
+                return properties.getRequest().getMaxTextLength();
+            }
+        }).orElse(properties.getRequest().getMaxTextLength());
+
+        if (request.text().length() > maxLength) {
+            throw new BusinessException(BusinessExceptions.MAX_LENGTH_EXCEEDED,
+                    "Text for Synthesis can't exceed the length of " + properties.getRequest().getMaxTextLength()
+                            + " characters.",
+                    HttpStatus.CONTENT_TOO_LARGE);
+        }
+
+        byte[] synthesize = speechService.synthesize(request);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "audio/mpeg")
-                .body(audio);
+                .body(synthesize);
     }
 
 }

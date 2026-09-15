@@ -7,12 +7,12 @@ import com.tts.transform.enums.ResponseStatus;
 import lombok.Builder;
 
 @Builder
-public record ApiResponse(
+public record ApiResponseDto(
         ResponseStatus status,
         Object body,
         LocalDateTime timestamp) {
 
-    public ApiResponse {
+    public ApiResponseDto {
         if (status == null) {
             status = ResponseStatus.SUCCESS;
         }

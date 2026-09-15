@@ -6,6 +6,8 @@ import com.tts.transform.models.SpeechHistory;
 
 public interface SpeechHistoryService {
 
+    List<SpeechHistory> getMyHistory();
+
     List<SpeechHistory> getAllHistoryRecords();
 
 }

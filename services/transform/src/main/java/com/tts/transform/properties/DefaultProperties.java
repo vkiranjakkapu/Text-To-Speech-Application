@@ -28,6 +28,7 @@ public class DefaultProperties {
     public static class LimitEnforcements {
 
         private long maxMonthlyLimit = 10000l;
+        private Double maxOverdraftLimit = 25.0;
 
         public long getMaxMonthlyLimit() {
             return maxMonthlyLimit;
@@ -37,18 +38,46 @@ public class DefaultProperties {
             this.maxMonthlyLimit = maxMonthlyLimit;
         }
 
+        public Double getMaxOverdraftLimit() {
+            return maxOverdraftLimit;
+        }
+
+        public void setMaxOverdraftLimit(Double maxOverdraftLimit) {
+            this.maxOverdraftLimit = maxOverdraftLimit;
+        }
+
     }
 
     public static class IncomingRequest {
 
-        private long maxCharLength = 55l;
+        private long minTextLength = 2l;
 
-        public long getMaxCharLength() {
-            return maxCharLength;
+        private long maxTextLength = 200l;
+
+        private long maxDoctextLength = 500l;
+
+        public long getMaxTextLength() {
+            return maxTextLength;
         }
 
-        public void setMaxCharLength(long maxCharLength) {
-            this.maxCharLength = maxCharLength;
+        public void setMaxTextLength(long maxCharLength) {
+            this.maxTextLength = maxCharLength;
+        }
+
+        public long getMinTextLength() {
+            return minTextLength;
+        }
+
+        public void setMinTextLength(long minCharLength) {
+            this.minTextLength = minCharLength;
+        }
+
+        public long getMaxDoctextLength() {
+            return maxDoctextLength;
+        }
+
+        public void setMaxDoctextLength(long maxDoctextLength) {
+            this.maxDoctextLength = maxDoctextLength;
         }
 
     }

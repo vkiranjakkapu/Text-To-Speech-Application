@@ -1,7 +1,6 @@
 package com.tts.transform.services.imp;
 
 import java.time.YearMonth;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,68 +10,78 @@ import com.tts.transform.enums.BusinessExceptions;
 import com.tts.transform.exceptions.BusinessException;
 import com.tts.transform.models.SpeechHistory;
 import com.tts.transform.models.UsageMetrics;
+import com.tts.transform.properties.DefaultProperties;
 import com.tts.transform.repositories.SpeechHistoryRepository;
+import com.tts.transform.services.AzureBlobStorageService;
 import com.tts.transform.services.CurrentUserService;
+import com.tts.transform.services.SpeechService;
 import com.tts.transform.services.TtsProvider;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class SpeechServiceImp {
+public class SpeechServiceImp implements SpeechService {
 
-    private final TtsProvider ttsProvider;
-    private final SpeechHistoryRepository historyRepository;
-    private final UsageMetricsService metricsService;
-    private final AzureBlobStorageService storageService;
-    private final CurrentUserService currentUser;
+	private final TtsProvider ttsProvider;
+	private final SpeechHistoryRepository historyRepository;
+	private final UsageMetricsService metricsService;
+	private final AzureBlobStorageService storageService;
+	private final CurrentUserService currentUser;
+	private final DefaultProperties properties;
 
-    public byte[] synthesize(SynthesizeRequest request) {
+	@Override
+	public byte[] synthesize(SynthesizeRequest request) {
 
-        UsageMetrics utilization = metricsService.getUtilizationByMonth(YearMonth.now());
+		UsageMetrics utilization = metricsService.getUtilizationByMonth(YearMonth.now());
 
-        long remaining = utilization.getMaxLimit() - utilization.getUtilized();
+		long remaining = utilization.getMaxLimit() - utilization.getUtilized();
 
-        if (remaining <= 0) {
-            String message = "Your Monthly Limit Exhausted.";
+		if (((double) remaining / request.text().length()) > properties.getLimits().getMaxOverdraftLimit()) {
+			throw new BusinessException(BusinessExceptions.LIMIT_EXCEEDED,
+					"Your input text is exceeding(>" + properties.getLimits().getMaxOverdraftLimit()
+							+ "%) the available limit",
+					HttpStatus.CONTENT_TOO_LARGE);
+		}
 
-            if (Math.abs(remaining) > 25) {
-                message += " You Have Already Exceeded Your Monthly Limit By "
-                        + Math.abs(remaining) + " Characters";
-            }
-            throw new BusinessException(BusinessExceptions.USAGE_LIMIT_EXHAUSTED, message.toString(),
-                    HttpStatus.TOO_MANY_REQUESTS);
-        }
+		if (remaining <= 0) {
 
-        byte[] audio = ttsProvider.synthesize(
-                request.text(),
-                request.language(),
-                request.voice(),
-                request.style(),
-                request.rate(),
-                request.pitch(),
-                request.volume());
+			String message = "Your Monthly Limit Exhausted.";
 
-        String audioPath = storageService.upload(
-                audio,
-                "speech.mp3");
+			if (Math.abs(remaining) > 25) {
+				message += " You Have Already Exceeded Your Monthly Limit By "
+						+ Math.abs(remaining) + " Characters";
+			}
+			throw new BusinessException(BusinessExceptions.USAGE_LIMIT_EXHAUSTED, message.toString(),
+					HttpStatus.TOO_MANY_REQUESTS);
+		}
 
-        historyRepository.save(
-                SpeechHistory.builder()
-                        .text(request.text())
-                        .ownerId(currentUser.userId())
-                        .language(request.language())
-                        .voice(request.voice())
-                        .audioPath(audioPath)
-                        .build());
+		byte[] audio = ttsProvider.synthesize(
+				request.text(),
+				request.language(),
+				request.voice(),
+				request.style(),
+				request.rate(),
+				request.pitch(),
+				request.volume());
 
-        utilization.setUtilized(Long.valueOf(utilization.getUtilized().intValue() + request.text().length()));
-        metricsService.updateUsage(utilization);
+		String audioPath = storageService.upload(
+				audio,
+				"speech.mp3");
 
-        return audio;
-    }
+		historyRepository.save(
+				SpeechHistory.builder()
+						.text(request.text())
+						.ownerId(currentUser.userId())
+						.language(request.language())
+						.voice(request.voice())
+						.audioPath(audioPath)
+						.build());
 
-    public List<SpeechHistory> getMyHistory() {
-        return historyRepository.findAllByOwnerId(currentUser.userId());
-    }
+		utilization.setUtilized(Long.valueOf(utilization.getUtilized().intValue() + request.text().length()));
+		metricsService.updateUsage(utilization);
+
+		return audio;
+	}
+
 }

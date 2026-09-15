@@ -18,6 +18,9 @@ azure:
 
 app:
     request:
-        max-char-length: 55
+        min-text-length: 55
+        max-text-length: 200
+        max-doctext-length: 500
     limits:
         max-monthly-limit: 10000
+        max-overdraft-limit: 25.0 # as a % of the remaining limit
