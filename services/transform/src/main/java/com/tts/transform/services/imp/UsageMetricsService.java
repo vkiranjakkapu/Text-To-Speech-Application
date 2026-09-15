@@ -1,6 +1,7 @@
 package com.tts.transform.services.imp;
 
 import java.time.YearMonth;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,10 @@ public class UsageMetricsService {
     private final CurrentUserService currentUser;
 
     private final DefaultProperties properties;
+
+    public List<UsageMetrics> getAllMetrics() {
+        return usageRepository.findAll();
+    }
 
     public UsageMetrics getUtilizationByMonth(YearMonth month) {
         return usageRepository.findByOwnerIdAndMonth(currentUser.userId(), month).orElseGet(() -> {
