@@ -216,7 +216,7 @@ class UserControllerTest {
 						"534237",
 						"AP",
 						"India"),
-				RoleType.STUDENT);
+				RoleType.USER);
 	}
 
 	private UpdateUserRequest updateRequest() {
@@ -247,7 +247,7 @@ class UserControllerTest {
 				null,
 				LocalDate.of(2000, 1, 1),
 				true,
-				Set.of(RoleType.STUDENT),
+				Set.of(RoleType.USER),
 				LocalDateTime.now(),
 				LocalDateTime.now());
 	}

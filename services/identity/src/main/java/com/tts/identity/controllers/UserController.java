@@ -45,7 +45,7 @@ public class UserController {
     private final AuthenticationContext authContext;
 
     @Operation(summary = "Get Loggedin User")
-    @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/me")
     public ResponseEntity<APIResponseDto> me() {
         AuthenticatedUser user = authContext.getCurrentUser().orElse(null);
@@ -80,8 +80,8 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<APIResponseDto> getAllUsersByRole(@PathVariable String role) {
         List<UserResponse> allUsers;
-        if (role.equals(RoleType.STUDENT.toString())) {
-            allUsers = userService.getAllUsersByRole(RoleType.STUDENT);
+        if (role.equals(RoleType.USER.toString())) {
+            allUsers = userService.getAllUsersByRole(RoleType.USER);
         } else {
             allUsers = userService.getAllUsersByRole(RoleType.ADMIN);
         }
@@ -97,7 +97,7 @@ public class UserController {
 
     @Operation(summary = "Get all users with ids")
     @PostMapping("/search")
-    @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<APIResponseDto> getAllUsersWithIds(@RequestBody FetchUsersRequestDto request) {
         return ResponseEntity
                 .ok(APIResponseDto.builder().data(userService.getAllUsersWithIds(request.ids())).build());
@@ -105,7 +105,7 @@ public class UserController {
 
     @Operation(summary = "Update user")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<APIResponseDto> updateUser(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateUserRequest request) {
@@ -115,7 +115,7 @@ public class UserController {
 
     @Operation(summary = "Change Password")
     @PatchMapping("/")
-    @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<APIResponseDto> changePassword(
             @Valid @RequestBody PasswordChangeRequestDto request) {
 
