@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.platform.web.model.ErrorResponse;
 import com.tts.transform.dto.ApiResponseDto;
+import com.tts.transform.dto.DocumentSpeechResponseDto;
 import com.tts.transform.dto.SynthesizeRequest;
 import com.tts.transform.enums.BusinessExceptions;
+import com.tts.transform.enums.ResponseStatus;
 import com.tts.transform.enums.SynthesisType;
 import com.tts.transform.exceptions.BusinessException;
 import com.tts.transform.properties.DefaultProperties;
@@ -62,11 +65,25 @@ public class SpeechController {
                     HttpStatus.CONTENT_TOO_LARGE);
         }
 
-        byte[] synthesize = speechService.synthesize(request);
+        try {
+            byte[] synthesize = speechService.synthesize(request);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, "audio/mpeg")
-                .body(synthesize);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, "audio/mpeg")
+                    .body(synthesize);
+        } catch (BusinessException e) {
+            if (e.getDefinition().equals(BusinessExceptions.LIMIT_EXCEEDED)) {
+                return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE).body(ApiResponseDto.builder()
+                        .status(ResponseStatus.ERROR)
+                        .body(DocumentSpeechResponseDto.builder()
+                                .error(new ErrorResponse(e.getDefinition(), e.getMessage()))
+                                .suggestion("You can use our AI Service to reduce the text size.")
+                                .text(request.text())
+                                .build())
+                        .build());
+            }
+            throw e;
+        }
     }
 
 }

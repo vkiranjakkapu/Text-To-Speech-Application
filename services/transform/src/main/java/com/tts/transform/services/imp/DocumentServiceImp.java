@@ -10,11 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tts.transform.enums.BusinessExceptions;
 import com.tts.transform.exceptions.BusinessException;
+import com.tts.transform.services.DocumentService;
 
 @Service
-public class DocumentServiceImp {
+public class DocumentServiceImp implements DocumentService {
     private final Tika tika = new Tika();
 
+    @Override
     public String extractText(MultipartFile file) {
 
         try (InputStream inputStream = file.getInputStream()) {

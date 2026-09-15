@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.tts.transform.dto.ApiResponseDto;
-import com.tts.transform.services.imp.DocumentServiceImp;
+import com.tts.transform.services.DocumentService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DocumentsController {
 
-    private final DocumentServiceImp documentService;
+    private final DocumentService documentService;
 
     @PostMapping("/extract")
     public ResponseEntity<ApiResponseDto> extractText(@RequestParam MultipartFile file) {
