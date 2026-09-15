@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
 	private void validatePermission(AuthenticatedUser user) {
 		if (user.getAuthorities().size() == 1
-				&& user.getAuthorities().stream().toList().getFirst().equalsIgnoreCase("ROLE_CUSTOMER"))
+				&& user.getAuthorities().stream().toList().getFirst().equalsIgnoreCase("ROLE_USER"))
 			throw new ForbiddenException("You are not allowed to create this user.");
 	}
 

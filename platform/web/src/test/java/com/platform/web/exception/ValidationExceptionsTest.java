@@ -16,7 +16,7 @@ class ValidationExceptionsTest {
 				exception.getErrorName());
 
 		assertEquals(
-				"VAL-2001",
+				"VAL-4001",
 				exception.getErrorCode());
 
 		assertEquals(
@@ -27,7 +27,7 @@ class ValidationExceptionsTest {
 	@Test
 	void shouldReturnApplicationErrorProperties() {
 
-		ValidationExceptions exception = ValidationExceptions.APPLICATION_ERROR;
+		WebExceptions exception = WebExceptions.APPLICATION_ERROR;
 
 		assertEquals(
 				"APPLICATION_ERROR",

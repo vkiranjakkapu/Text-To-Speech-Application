@@ -16,10 +16,10 @@ spring:
               predicates:
                 - Path=/identity/**
 
-            - id: tts-transform-service
-              uri: lb://tts-transform-service
+            - id: tts-transformer-service
+              uri: lb://tts-transformer-service
               predicates:
-                - Path=/transform/**
+                - Path=/speech/**
 
             - id: tts-reports-service
               uri: lb://tts-reports-service

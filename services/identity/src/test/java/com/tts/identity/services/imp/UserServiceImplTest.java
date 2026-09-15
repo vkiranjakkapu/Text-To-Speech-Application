@@ -118,10 +118,10 @@ class UserServiceImplTest {
 				LocalDate.of(2000, 1, 1),
 				"9999999999",
 				addressDto,
-				RoleType.STUDENT);
+				RoleType.USER);
 
 		Role customerRole = new Role();
-		customerRole.setName(RoleType.STUDENT);
+		customerRole.setName(RoleType.USER);
 
 		when(authenticationContext.getCurrentUser())
 				.thenReturn(Optional.of(authenticatedUser("ROLE_ADMIN")));
@@ -129,7 +129,7 @@ class UserServiceImplTest {
 		when(userRepository.existsByEmail(request.email()))
 				.thenReturn(false);
 
-		when(roleRepository.findByName(RoleType.STUDENT))
+		when(roleRepository.findByName(RoleType.USER))
 				.thenReturn(Optional.of(customerRole));
 
 		when(passwordEncoder.encode(any()))
@@ -160,7 +160,7 @@ class UserServiceImplTest {
 				LocalDate.now(),
 				"9999999999",
 				addressDto,
-				RoleType.STUDENT);
+				RoleType.USER);
 
 		when(authenticationContext.getCurrentUser())
 				.thenReturn(Optional.of(authenticatedUser("ROLE_ADMIN")));
@@ -187,10 +187,10 @@ class UserServiceImplTest {
 				LocalDate.now(),
 				"9999999999",
 				addressDto,
-				RoleType.STUDENT);
+				RoleType.USER);
 
 		when(authenticationContext.getCurrentUser())
-				.thenReturn(Optional.of(authenticatedUser("ROLE_CUSTOMER")));
+				.thenReturn(Optional.of(authenticatedUser("ROLE_USER")));
 
 		assertThrows(
 				ForbiddenException.class,

@@ -3,8 +3,8 @@ package com.platform.web.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.platform.web.exception.WebExceptions;
 import com.platform.web.exception.ErrorDefinition;
-import com.platform.web.exception.ValidationExceptions;
 
 public record ErrorResponse(
 
@@ -19,7 +19,7 @@ public record ErrorResponse(
         LocalDateTime timestamp) {
 
     public ErrorResponse() {
-        this(ValidationExceptions.APPLICATION_ERROR);
+        this(WebExceptions.APPLICATION_ERROR);
     }
 
     public ErrorResponse(ErrorDefinition error) {

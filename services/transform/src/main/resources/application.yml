@@ -1,0 +1,19 @@
+server:
+    port: 8081
+
+spring:
+    application:
+        name: tts-transformer-service
+    config:
+        import: configserver:http://localhost:8888
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://${database.host:localhost}:${database.port:5432}/${database.name:tts_transformer}
+        username: admin
+        password: admin
+    jpa:
+        hibernate:
+            ddl-auto: create
+    sql:
+        init:
+            mode: always

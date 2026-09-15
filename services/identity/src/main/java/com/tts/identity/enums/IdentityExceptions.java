@@ -9,7 +9,6 @@ public enum IdentityExceptions implements ErrorDefinition {
     
     // * User Errors
     USER_NOT_FOUND("USER_NOT_FOUND", "BUS-2002", "User with given details not found in records"),
-    RESOURCE_NOT_FOUND("RESOURCE_NOT_FOUND", "BUS-2004", "Resource supplied not found"),
     DUPLICATE_RESOURCE_FOUND("DUPLICATE_RESOURCE_FOUND", "BUS-2006", "Resource already exists in records.");
 
     private final String errorName;

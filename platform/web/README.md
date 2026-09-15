@@ -78,7 +78,7 @@ The starter provides a standard error response model.
 ```json
 {
   "errorName": "VALIDATION_ERROR",
-  "errorCode": "2001",
+  "errorCode": "4001",
   "errorMessage": "Validation failed.",
   "validationErrors": [
     {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.platform.web.exception.SecurityExceptions;
+import com.platform.web.exception.WebExceptions;
 import com.platform.web.model.ErrorResponse;
 import com.tts.identity.enums.IdentityExceptions;
 import com.tts.identity.exceptions.EmailAlreadyUsedException;
@@ -24,7 +25,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(SecurityExceptions.INVALID_TOKEN, e.getMessage()));
     }
 
-    @ExceptionHandler({BadCredentialsException.class})
+    @ExceptionHandler({ BadCredentialsException.class })
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse(IdentityExceptions.BAD_CREDENTIALS));
@@ -39,7 +40,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
-                .body(new ErrorResponse(IdentityExceptions.RESOURCE_NOT_FOUND, e.getMessage()));
+                .body(new ErrorResponse(WebExceptions.RESOURCE_NOT_FOUND, e.getMessage()));
     }
 
     @ExceptionHandler({ ForbiddenException.class, AccessDeniedException.class })

@@ -1,0 +1,26 @@
+database:
+    host: localhost
+    port: 5432
+    name: tts_transformer
+
+eureka:
+    client:
+        webclient:
+            enabled: true
+
+azure:
+    speech:
+        key: ${AZURE_SPEECH_KEY}
+        region: ${AZURE_SPEECH_REGION}
+    storage:
+        connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
+        container-name: ${AZURE_STORAGE_CONTAINER}
+
+app:
+    request:
+        min-text-length: 55
+        max-text-length: 200
+        max-doctext-length: 500
+    limits:
+        max-monthly-limit: 10000
+        max-overdraft-limit: 25.0 # as a % of the remaining limit
