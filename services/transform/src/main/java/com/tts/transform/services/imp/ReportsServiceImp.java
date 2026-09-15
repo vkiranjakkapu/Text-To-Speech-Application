@@ -8,6 +8,7 @@ import com.tts.transform.models.SpeechHistory;
 import com.tts.transform.models.UsageMetrics;
 import com.tts.transform.services.ReportsService;
 import com.tts.transform.services.SpeechHistoryService;
+import com.tts.transform.services.UsageMetricsService;
 
 import lombok.RequiredArgsConstructor;
 

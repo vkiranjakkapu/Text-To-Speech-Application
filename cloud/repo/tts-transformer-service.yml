@@ -15,6 +15,10 @@ azure:
     storage:
         connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
         container-name: ${AZURE_STORAGE_CONTAINER}
+    openai:
+        endpoint: ${AZURE_OPENAI_ENDPOINT}
+        api-key: ${AZURE_OPENAI_API_KEY}
+        deployment: ${AZURE_OPENAI_DEPLOYMENT}
 
 app:
     request:

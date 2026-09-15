@@ -16,6 +16,7 @@ import com.tts.transform.services.AzureBlobStorageService;
 import com.tts.transform.services.CurrentUserService;
 import com.tts.transform.services.SpeechService;
 import com.tts.transform.services.TtsProvider;
+import com.tts.transform.services.UsageMetricsService;
 
 import lombok.RequiredArgsConstructor;
 
