@@ -5,9 +5,5 @@ import UserDashboard from "./UserDashboard";
 export default function Dashboard() {
     const { isAdmin } = usePrincipal();
 
-    if (isAdmin) {
-        return <AdminDashboard />;
-    } else {
-        return <UserDashboard />;
-    }
+    return isAdmin ? <AdminDashboard /> : <UserDashboard />;
 }

@@ -35,6 +35,8 @@ export default function NavbarComponent() {
     const { profile, isLoggedIn, status, login, logout } = usePrincipal();
     const navigate = useNavigate();
 
+    const [showMenu, toggleMenu] = useState<boolean>(false);
+
     const [loginModal, setLoginModal] = useState<"login" | "register" | null>(
         null,
     );
@@ -155,8 +157,8 @@ export default function NavbarComponent() {
 
     return (
         <>
-            <nav className="sticky p-0 md:p-6 border-b border-primary-light dark:border-primary-light/30">
-                <div className="flex flex-wrap justify-between px-3 md:px-7 md:py-4 md:justify-around items-center gap-3">
+            <nav className="sticky py-3 md:p-6 border-b md:border-0">
+                <div className="flex flex-wrap px-3 md:px-30 md:py-4 justify-between items-center gap-3">
                     <div className="flex items-center gap-2">
                         <img
                             src="./favicon.png"
@@ -181,9 +183,12 @@ export default function NavbarComponent() {
                         <ActionButton
                             icon={Bars3Icon}
                             className="btn-primary rounded-full p-2"
+                            onClick={() => toggleMenu(!showMenu)}
                         />
                     </div>
-                    <div className="flex-1 md:flex-none flex flex-wrap gap-3 items-center">
+                    <div
+                        className={`w-full md:w-fit flex-wrap gap-3 items-center ${showMenu ? `block` : `hidden md:flex`}`}
+                    >
                         {isLoggedIn ? (
                             <>
                                 <ul className="p-1 flex flex-col md:flex-row gap-2 md:bg-slate-50 dark:bg-slate-800 w-full md:w-fit md:rounded-full md:shadow-sm">
@@ -221,7 +226,7 @@ export default function NavbarComponent() {
                                     })}
                                 </ul>
                                 <div
-                                    className={`rounded-full p-1 shadow-sm flex items-center justify-around ${location.pathname === RoutePaths.PROFILE ? `bg-primary text-white` : `bg-slate-50 dark:bg-slate-800 `}`}
+                                    className={`mx-auto mt-2.5 md:m-0 rounded-full p-1 shadow-sm flex items-center justify-around ${location.pathname === RoutePaths.PROFILE ? `bg-primary text-white` : `bg-slate-50 dark:bg-slate-800 `}`}
                                     onClick={() => navigate(RoutePaths.PROFILE)}
                                 >
                                     <img
@@ -269,7 +274,7 @@ export default function NavbarComponent() {
                                 </li>
                             </ul>
                         )}
-                        <div className="p-1 shadow-sm rounded-full">
+                        <div className="hidden md:block p-1 shadow-sm rounded-full">
                             <ActionButton
                                 icon={theme === "light" ? MoonIcon : SunIcon}
                                 onClick={() => {
@@ -323,7 +328,7 @@ export default function NavbarComponent() {
                                 id="lastName"
                                 required
                             />
-                            <hr className="border-b border-primary-light/30" />
+                            <hr className="border-b" />
                             <InputComponent
                                 type="password"
                                 placeholder="Create Password"

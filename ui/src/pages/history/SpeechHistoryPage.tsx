@@ -1,3 +1,9 @@
+import SectionLayoutComponent from "../../components/SectionLayoutComponent";
+
 export default function SpeechHistoryPage() {
-    return <h1>Speech History</h1>;
+    return (
+        <SectionLayoutComponent>
+            <h1>Speech History</h1>
+        </SectionLayoutComponent>
+    );
 }

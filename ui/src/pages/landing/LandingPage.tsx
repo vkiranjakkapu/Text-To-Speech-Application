@@ -1,9 +1,9 @@
 import SectionLayoutComponent from "../../components/SectionLayoutComponent";
 
-export default function SpeechPage() {
+export default function LandingPage() {
     return (
         <SectionLayoutComponent>
-            <h1>Speech Page</h1>
+            <h1>Welcome</h1>
         </SectionLayoutComponent>
     );
 }

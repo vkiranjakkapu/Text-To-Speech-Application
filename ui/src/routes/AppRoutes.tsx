@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/dashboard/Dashboard";
 import SpeechHistoryPage from "../pages/history/SpeechHistoryPage";
-import LandingPage from "../pages/LandingPage";
+import LandingPage from "../pages/landing/LandingPage";
+import AdminLayout from "../pages/layouts/AdminLayout";
 import HomeLayout from "../pages/layouts/HomeLayout";
 import ProtectedLayout from "../pages/layouts/ProtectedLayout";
 import ProfilePage from "../pages/profile/ProfilePage";
 import UsersPage from "../pages/users/UsersPage";
 import { RoutePaths } from "./RoutePaths";
-import AdminLayout from "../pages/layouts/AdminLayout";
 
 export default function AppRoutes() {
     return (

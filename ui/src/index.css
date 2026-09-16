@@ -24,6 +24,10 @@
         }
     }
 
+    body * {
+        @apply border-slate-200/80 dark:border-primary-light/20;
+    }
+
     h1 {
         font-weight: 500;
         @apply text-2xl;
@@ -40,7 +44,7 @@
     }
 
     :is(input, select, textarea) {
-        @apply w-full border border-primary-light/30 p-2 py-1.5 rounded-lg;
+        @apply w-full border p-2 py-1.5 rounded-lg;
     }
 
     :is(input, select, textarea):not(.form-group-component *),
