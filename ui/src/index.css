@@ -1,0 +1,72 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --color-primary: #6b855d;
+    --color-primary-light: #cac8cc;
+
+    --color-secondary: #1b5879;
+
+    /* --font-noto-sans: "Noto Sans", sans-serif; */
+    --font-raleway: "Raleway", sans-serif;
+}
+
+@layer base {
+    body {
+        font-family: var(--font-raleway);
+        @apply text-slate-600;
+
+        @variant dark {
+            @apply bg-slate-900 text-white;
+        }
+    }
+
+    h1 {
+        font-weight: 500;
+        @apply text-2xl;
+    }
+
+    h2 {
+        font-weight: 500;
+        @apply text-xl;
+    }
+
+    h3 {
+        font-weight: 500;
+        @apply text-lg;
+    }
+
+    :is(input, select, textarea) {
+        @apply w-full border border-primary-light/30 p-2 py-1.5 rounded-lg;
+    }
+
+    :is(input, select, textarea):not(.form-group-component *),
+    .form-group-component {
+        @apply px-2 py-1 outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1 focus:border-transparent dark:focus:ring-offset-primary;
+    }
+
+    button {
+        @apply shadow-sm cursor-pointer px-2 py-1 capitalize transition-colors duration-100 rounded-lg;
+    }
+}
+
+@layer components {
+    .text-style-secondary {
+        @apply opacity-40;
+    }
+
+    .btn-primary {
+        @apply bg-primary/90 text-white hover:bg-primary;
+    }
+
+    .btn-secondary {
+        @apply bg-primary-light/30 text-primary hover:bg-primary-light/40;
+
+        @variant dark {
+            @apply text-white;
+        }
+    }
+}

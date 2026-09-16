@@ -16,12 +16,15 @@ import com.platform.security.context.AuthenticationContext;
 import com.platform.security.model.AuthenticatedUser;
 import com.tts.identity.dto.CreateUserRequestDto;
 import com.tts.identity.dto.PasswordChangeRequestDto;
+import com.tts.identity.dto.RegistrationRequest;
 import com.tts.identity.dto.UpdateUserRequest;
 import com.tts.identity.dto.UserResponse;
 import com.tts.identity.entities.Address;
 import com.tts.identity.entities.Role;
 import com.tts.identity.entities.RoleType;
 import com.tts.identity.entities.User;
+import com.tts.identity.enums.IdentityExceptions;
+import com.tts.identity.exceptions.BusinessException;
 import com.tts.identity.exceptions.EmailAlreadyUsedException;
 import com.tts.identity.exceptions.ForbiddenException;
 import com.tts.identity.exceptions.ResourceNotFoundException;
@@ -130,6 +133,25 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
 		return mapToResponse(user);
+	}
+
+	@Override
+	public UserResponse register(RegistrationRequest request) {
+		if (!request.password().equals(request.confirmPassword())) {
+			throw new BusinessException(IdentityExceptions.REGISTRATION_ERROR, "Two Passwords didn't match!");
+		}
+
+		Role role = roleRepository.findByName(RoleType.USER)
+				.orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+
+		User user = User.builder()
+				.email(request.email())
+				.firstName(request.firstName())
+				.lastName(request.lastName())
+				.roles(Set.of(role))
+				.password(passwordEncoder.encode(Optional.ofNullable(request.password()).orElse("password")))
+				.build();
+		return mapToResponse(userRepository.save(user));
 	}
 
 	@Override

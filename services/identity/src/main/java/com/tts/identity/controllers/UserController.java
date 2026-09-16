@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ import com.tts.identity.dto.APIResponseDto;
 import com.tts.identity.dto.CreateUserRequestDto;
 import com.tts.identity.dto.FetchUsersRequestDto;
 import com.tts.identity.dto.PasswordChangeRequestDto;
+import com.tts.identity.dto.RegistrationRequest;
 import com.tts.identity.dto.UpdateUserRequest;
 import com.tts.identity.dto.UserResponse;
 import com.tts.identity.entities.RoleType;
@@ -66,6 +68,16 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(APIResponseDto.builder().data(userService.createUser(request)).build());
+    }
+
+    @Operation(summary = "Registration By Users")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User created"),
+            @ApiResponse(responseCode = "400", description = "Validation failed"),
+    })
+    @PostMapping("/register")
+    public ResponseEntity<APIResponseDto> register(@Valid @ModelAttribute RegistrationRequest request) {
+        return ResponseEntity.ok(APIResponseDto.builder().data(userService.register(request)).build());
     }
 
     @Operation(summary = "Get all users")

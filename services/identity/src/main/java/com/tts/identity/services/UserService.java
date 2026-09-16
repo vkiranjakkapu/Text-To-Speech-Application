@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.tts.identity.dto.CreateUserRequestDto;
 import com.tts.identity.dto.PasswordChangeRequestDto;
+import com.tts.identity.dto.RegistrationRequest;
 import com.tts.identity.dto.UpdateUserRequest;
 import com.tts.identity.dto.UserResponse;
 import com.tts.identity.entities.RoleType;
@@ -22,6 +23,8 @@ public interface UserService {
     UserResponse getUserById(UUID id);
 
     UserResponse getUserByEmail(String email);
+
+    UserResponse register(RegistrationRequest request);
 
     UserResponse updateUser(UUID id, UpdateUserRequest request);
 

@@ -12,7 +12,7 @@ import com.tts.reports.services.ReportsService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/speech/api/v1/reports")
+@RequestMapping("/reports/api/v1/speech")
 @RequiredArgsConstructor
 public class ReportsController {
 
