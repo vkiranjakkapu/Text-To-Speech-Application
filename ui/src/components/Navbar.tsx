@@ -381,7 +381,7 @@ export default function NavbarComponent() {
             </ModalComponent>
             <LoadingPortalComponent
                 isLoading={status === AuthStatus.INITIALIZING}
-                message="Preparing your dashboard."
+                message="Preparing your session."
             />
         </>
     );

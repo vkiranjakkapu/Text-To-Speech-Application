@@ -38,7 +38,7 @@ export default function AdminDashboard() {
                 setUserReports(monthlyUserReports?.monthlyReports ?? []);
                 return;
             }
-            ReportsService.getMetricsReports<DataRecord[]>(month).then(
+            ReportsService.getUserReports<DataRecord[]>(month).then(
                 (resp) => {
                     if (resp && !("errorMessage" in resp)) {
                         setUserReports(resp.data);

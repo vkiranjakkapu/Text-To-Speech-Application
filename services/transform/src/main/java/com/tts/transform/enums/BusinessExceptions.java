@@ -4,17 +4,20 @@ import com.platform.web.exception.ErrorDefinition;
 
 public enum BusinessExceptions implements ErrorDefinition {
 
+    INTERNAL_COMMUNICATION_ERROR("INTERNAL_COMMUNICATION_ERROR", "BUS-5001",
+            "Error connecting to the requested service."),
     SYNTHESIS_ERROR("SYNTHESIS_ERROR", "BUS-5002", "Error while synthesizing text to audio."),
     STORAGE_ERROR("STORAGE_ERROR", "BUS-5003", "Error while storing the audio file(s)."),
-    MIN_LENGTH_REQUIRED("MIN_LENGTH_REQUIRED", "BUS-4002", "Min characters length should be provided to text synthesis.."),
-    MAX_LENGTH_EXCEEDED("MAX_LENGTH_EXCEEDED", "BUS-4003", "Max characters length to convert to speech was exceeded."),
     DOCUMENT_EXTRACTION_ERROR("DOCUMENT_EXTRACTION_ERROR", "BUS-5005",
             "Error occured while extracting contents from the file."),
-    USAGE_LIMIT_EXHAUSTED("USAGE_LIMIT_EXHAUSTED", "BUS-2001", "Your Monthly Limit Exhausted for this month."),
-    LIMIT_EXCEEDED("LIMIT_EXCEEDED", "BUS-2001", "Your input text is exceeding the remainig limit"),
 
-    INTERNAL_COMMUNICATION_ERROR("INTERNAL_COMMUNICATION_ERROR", "BUS-5001",
-            "Error connecting to the requested service.");
+    RESOURCE_NOT_FOUND("RESOURCE_NOT_FOUND", "BUS-4001",
+            "Resource with guven Id not found."),
+    MIN_LENGTH_REQUIRED("MIN_LENGTH_REQUIRED", "BUS-4002",
+            "Min characters length should be provided to text synthesis.."),
+    MAX_LENGTH_EXCEEDED("MAX_LENGTH_EXCEEDED", "BUS-4003", "Max characters length to convert to speech was exceeded."),
+    USAGE_LIMIT_EXHAUSTED("USAGE_LIMIT_EXHAUSTED", "BUS-4004", "Your Monthly Limit Exhausted for this month."),
+    LIMIT_EXCEEDED("LIMIT_EXCEEDED", "BUS-4005", "Your input text is exceeding the remainig limit");
 
     private String errorName;
     private String errorCode;

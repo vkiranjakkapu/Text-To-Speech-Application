@@ -25,7 +25,7 @@
     }
 
     body * {
-        @apply border-primary-light/60 dark:border-primary-light/20;
+        @apply border-primary-light/60 dark:border-primary-light/20 divide-primary-light/60 dark:divide-primary-light/20;
     }
 
     h1 {

@@ -48,4 +48,12 @@ public class AzureBlobStorageServiceImp implements AzureBlobStorageService {
 
         return blobClient.downloadContent().toBytes();
     }
+
+    @Override
+    public void delete(String filePath) {
+
+        BlobClient blobClient = containerClient.getBlobClient(filePath);
+
+        blobClient.deleteIfExists();
+    }
 }

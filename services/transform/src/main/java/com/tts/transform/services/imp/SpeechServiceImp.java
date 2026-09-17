@@ -1,6 +1,7 @@
 package com.tts.transform.services.imp;
 
 import java.time.YearMonth;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,9 @@ import com.tts.transform.exceptions.BusinessException;
 import com.tts.transform.models.SpeechHistory;
 import com.tts.transform.models.UsageMetrics;
 import com.tts.transform.properties.DefaultProperties;
-import com.tts.transform.repositories.SpeechHistoryRepository;
 import com.tts.transform.services.AzureBlobStorageService;
 import com.tts.transform.services.CurrentUserService;
+import com.tts.transform.services.SpeechHistoryService;
 import com.tts.transform.services.SpeechService;
 import com.tts.transform.services.TtsProvider;
 import com.tts.transform.services.UsageMetricsService;
@@ -25,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class SpeechServiceImp implements SpeechService {
 
 	private final TtsProvider ttsProvider;
-	private final SpeechHistoryRepository historyRepository;
+	private final SpeechHistoryService historyService;
 	private final UsageMetricsService metricsService;
 	private final AzureBlobStorageService storageService;
 	private final CurrentUserService currentUser;
@@ -78,19 +79,24 @@ public class SpeechServiceImp implements SpeechService {
 				audio,
 				"speech.mp3");
 
-		historyRepository.save(
-				SpeechHistory.builder()
-						.text(request.text())
-						.ownerId(currentUser.userId())
-						.language(request.language())
-						.voice(request.voice())
-						.audioPath(audioPath)
-						.build());
+		historyService.createRecord(SpeechHistory.builder()
+				.text(request.text())
+				.ownerId(currentUser.userId())
+				.language(request.language())
+				.voice(request.voice())
+				.audioPath(audioPath)
+				.build());
 
 		utilization.setUtilized(Long.valueOf(utilization.getUtilized().intValue() + request.text().length()));
 		metricsService.updateUsage(utilization);
 
 		return audio;
+	}
+
+	@Override
+	public byte[] download(UUID speechId) {
+		SpeechHistory recording = historyService.getHistoryById(speechId);
+		return storageService.download(recording.getAudioPath());
 	}
 
 }
