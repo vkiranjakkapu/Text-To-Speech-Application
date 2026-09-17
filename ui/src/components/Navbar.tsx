@@ -164,7 +164,7 @@ export default function NavbarComponent() {
 
     return (
         <>
-            <nav className="sticky py-3 md:p-6 border-b md:border-0">
+            <nav className="sticky py-3 md:p-6 border-b">
                 <div className="flex flex-wrap px-3 md:px-30 md:py-4 justify-between items-center gap-3">
                     <div className="flex items-center gap-2">
                         <img

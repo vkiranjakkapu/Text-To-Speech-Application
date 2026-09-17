@@ -15,7 +15,7 @@ export default function SectionLayoutComponent({
     return (
         <section {...props} className={`px-3 md:px-36 py-3 *:py-3 ${props.className}`}>
             {(title || description) && (
-                <div className="border-b border-primary-light/40 dark:border-primary-light/30">
+                <div className="border-b">
                     <h2>{title}</h2>
                     <p>{description}</p>
                 </div>

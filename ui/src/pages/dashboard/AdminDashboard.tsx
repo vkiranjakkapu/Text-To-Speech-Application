@@ -158,7 +158,7 @@ export default function AdminDashboard() {
                     {/* <a href="#" className="text-sm text-style-secondary">Show Monthly Trend</a> */}
                 </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 *:h-80 *:p-4 *:flex *:flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 *:h-80 *:p-4 *:flex *:flex-col *:dark:bg-slate-50 *:dark:text-slate-600">
                 <div className="rounded border shadow-sm p-1 space-y-2 col-span-full">
                     {monthlyUserReports == null ? (
                         <SpinnerComponent />
