@@ -37,7 +37,6 @@ export default function AuthenticationContextProvider({
                 setStatus(AuthStatus.AUTHENTICATED);
             } else {
                 setStatus(AuthStatus.UNAUTHENTICATED);
-                console.log(resp);
             }
         });
     }, []);

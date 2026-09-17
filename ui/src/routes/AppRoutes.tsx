@@ -8,6 +8,7 @@ import ProtectedLayout from "../pages/layouts/ProtectedLayout";
 import ProfilePage from "../pages/profile/ProfilePage";
 import UsersPage from "../pages/users/UsersPage";
 import { RoutePaths } from "./RoutePaths";
+import SynthesizePage from "../pages/speech/SynthesizePage";
 
 export default function AppRoutes() {
     return (
@@ -23,6 +24,10 @@ export default function AppRoutes() {
                 />
                 <Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
                 <Route element={<AdminLayout />}>
+                    <Route
+                        path={RoutePaths.SYNTHESIZE}
+                        element={<SynthesizePage />}
+                    />
                     <Route path={RoutePaths.USERS} element={<UsersPage />} />
                     <Route
                         path={RoutePaths.USER_DETAILS}

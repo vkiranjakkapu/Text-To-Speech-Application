@@ -1,11 +1,10 @@
 package com.tts.reports.dto;
 
-import java.time.YearMonth;
-import java.util.Map;
+import java.util.List;
 
 import lombok.Builder;
 
 @Builder
-public record UsageReportsDto(Long currentMonthUtilization, Map<YearMonth, Long> monthlyUtilization) {
+public record UsageReportsDto(Long currentMonthUtilization, List<DataRecord> monthlyUtilization) {
 
 }

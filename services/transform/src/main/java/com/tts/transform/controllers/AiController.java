@@ -49,7 +49,7 @@ public class AiController {
                 break;
         }
 
-        return ResponseEntity.ok(ApiResponseDto.builder().body(result).build());
+        return ResponseEntity.ok(ApiResponseDto.builder().data(result).build());
     }
 
     private void requireLength(Long length) {

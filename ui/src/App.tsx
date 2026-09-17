@@ -4,7 +4,7 @@ import AppRoutes from "./routes/AppRoutes";
 
 function App() {
     return (
-        <main className="h-screen overflow-hidden">
+        <main className="h-screen">
             <NavbarComponent />
             <AppRoutes />
         </main>

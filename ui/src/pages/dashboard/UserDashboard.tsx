@@ -1,5 +1,6 @@
 import SectionLayoutComponent from "../../components/SectionLayoutComponent";
 import usePrincipal from "../../context/usePrincipal";
+import Synthesize from "../speech/Synthesize";
 
 export default function UserDashboard() {
     const { profile } = usePrincipal();
@@ -9,7 +10,7 @@ export default function UserDashboard() {
             title={`Welcome ${profile?.name}`}
             description={`You can convert text from your choice to speech in this page.`}
         >
-            <h1>User Dashboard</h1>
+            <Synthesize />
         </SectionLayoutComponent>
     );
 }

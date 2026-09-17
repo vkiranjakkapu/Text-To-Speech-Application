@@ -9,7 +9,7 @@ import lombok.Builder;
 @Builder
 public record ApiResponseDto(
         ResponseStatus status,
-        Object body,
+        Object data,
         LocalDateTime timestamp) {
 
     public ApiResponseDto {

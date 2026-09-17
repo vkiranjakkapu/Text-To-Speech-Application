@@ -81,6 +81,13 @@ export class DateFormatter {
         return new Intl.DateTimeFormat("en-US", options).format(date);
     }
 
+    public static toFormattedMonthYear(isoString?: string | Date): string {
+        return this.toFormattedDate(isoString, {
+            month: "short",
+            year: "2-digit",
+        }).replace(" ", "'");
+    }
+
     /**
      * Safely formats value if it matches the timestamp regex, otherwise returns original value.
      */

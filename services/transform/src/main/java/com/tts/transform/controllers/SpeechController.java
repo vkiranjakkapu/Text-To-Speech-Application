@@ -37,7 +37,7 @@ public class SpeechController {
 
     @GetMapping("/voices")
     public ResponseEntity<ApiResponseDto> getVoices() {
-        return ResponseEntity.ok(ApiResponseDto.builder().body(ttsProvider.getVoices()).build());
+        return ResponseEntity.ok(ApiResponseDto.builder().data(ttsProvider.getVoices()).build());
     }
 
     @PostMapping("/synthesize")
@@ -75,7 +75,7 @@ public class SpeechController {
             if (e.getDefinition().equals(BusinessExceptions.LIMIT_EXCEEDED)) {
                 return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE).body(ApiResponseDto.builder()
                         .status(ResponseStatus.ERROR)
-                        .body(DocumentSpeechResponseDto.builder()
+                        .data(DocumentSpeechResponseDto.builder()
                                 .error(new ErrorResponse(e.getDefinition(), e.getMessage()))
                                 .suggestion("You can use our AI Service to reduce the text size.")
                                 .text(request.text())

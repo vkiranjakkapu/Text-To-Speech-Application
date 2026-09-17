@@ -6,6 +6,7 @@ import {
     KeyIcon,
     LockClosedIcon,
     MoonIcon,
+    SpeakerWaveIcon,
     SunIcon,
     UserGroupIcon,
     UserPlusIcon,
@@ -75,6 +76,12 @@ export default function NavbarComponent() {
             uri: RoutePaths.DASHBOARD,
             icon: HomeIcon,
             roles: [RoleType.ADMIN, RoleType.USER],
+        },
+        {
+            label: "Synthesize",
+            uri: RoutePaths.SYNTHESIZE,
+            icon: SpeakerWaveIcon,
+            roles: [RoleType.ADMIN],
         },
         {
             label: "History",
