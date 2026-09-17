@@ -12,6 +12,6 @@ public record UpdateUserRequest(
 		@NotNull String phone,
 		@NotNull UserGender gender,
 		@NotNull LocalDate dob,
-		@NotNull AddressDto address,
-		boolean enabled) {
+		AddressDto address,
+		Boolean enabled) {
 }

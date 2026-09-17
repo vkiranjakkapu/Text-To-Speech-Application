@@ -145,7 +145,7 @@ export default function AdminDashboard() {
                         {usageMetrics?.monthlyUtilization.at(-1)?.value ?? 0}{" "}
                         <sub className="text-md">characters</sub>
                     </h1>
-                    <p className="capitalize">Monthly Synthesis</p>
+                    <p className="capitalize">This Month's Synthesis</p>
                     {/* <a href="#" className="text-sm text-style-secondary">Show Monthly Trend</a> */}
                 </div>
                 <div className="p-2">

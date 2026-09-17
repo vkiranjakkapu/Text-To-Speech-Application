@@ -14,7 +14,7 @@ import {
 
 import { useEffect, useState, type SubmitEvent } from "react";
 import type { ApiResponse } from "../api/api";
-import Avatar from "../assets/undraw_reading-notes_dg9z.svg";
+import Avatar from "../assets/undraw_talking-on-the-phone_lc9v.svg";
 import usePrincipal, {
     AuthStatus,
     RoleType,

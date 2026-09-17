@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 				.lastName(request.lastName())
 				.email(request.email())
 				.password(passwordEncoder.encode(Optional.ofNullable(request.password()).orElse("password")))
-				.dob(request.dob())
+				.dob(Optional.ofNullable(request.dob()).orElse(null))
 				.phone(request.phone())
 				.gender(request.gender())
 				.address(Address.builder()
@@ -150,6 +150,7 @@ public class UserServiceImpl implements UserService {
 				.lastName(request.lastName())
 				.roles(Set.of(role))
 				.password(passwordEncoder.encode(Optional.ofNullable(request.password()).orElse("password")))
+				.address(Address.builder().build())
 				.build();
 		return mapToResponse(userRepository.save(user));
 	}
@@ -163,13 +164,14 @@ public class UserServiceImpl implements UserService {
 		user.setFirstName(request.firstName());
 		user.setLastName(request.lastName());
 		user.setPhone(request.phone());
-		Address address = mapper.convertValue(request.address(), Address.class);
+		Address address = Optional.ofNullable(request.address())
+				.map(ad -> mapper.convertValue(ad, Address.class)).orElse(user.getAddress());
 		address.setId(user.getAddress().getId());
 		address.setDeleted(false);
 		user.setAddress(address);
 		user.setDob(request.dob());
 		user.setGender(request.gender());
-		user.setEnabled(request.enabled());
+		user.setEnabled(Optional.ofNullable(request.enabled()).orElse(user.isEnabled()));
 
 		return mapToResponse(userRepository.save(user));
 	}

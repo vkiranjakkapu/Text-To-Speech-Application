@@ -5,11 +5,14 @@ import {
     PaginationButtons,
     type PaginationButtonsProps,
 } from "./pagination/PaginationButtons";
+import type { ActionButtonProps } from "./ActionButtonComponent";
+import ActionButton from "./ActionButtonComponent";
 
 export type SectionLayoutComponentProps<T> = HTMLAttributes<HTMLElement> & {
     children: ReactNode;
     title?: string;
     description?: string;
+    actionEvents?: ActionButtonProps[];
     search?: InputComponentProps;
     pagination?: PaginationButtonsProps<T>;
 };
@@ -18,6 +21,7 @@ export default function SectionLayoutComponent<T>({
     children,
     title,
     description,
+    actionEvents,
     search,
     pagination,
     ...props
@@ -27,10 +31,21 @@ export default function SectionLayoutComponent<T>({
             {...props}
             className={`px-3 md:px-36 py-3 *:py-3 ${props.className}`}
         >
-            {(title || description) && (
-                <div className="border-b">
-                    <h2>{title}</h2>
-                    <p>{description}</p>
+            {(title || description || actionEvents) && (
+                <div className="flex justify-between border-b">
+                    <div className="">
+                        <h2>{title}</h2>
+                        <p>{description}</p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                        {actionEvents?.map((act, idx) => (
+                            <ActionButton
+                                key={"section-action-" + idx}
+                                {...act}
+                                className={`btn-primary ${act.className}`}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
             {(search || pagination) && (
