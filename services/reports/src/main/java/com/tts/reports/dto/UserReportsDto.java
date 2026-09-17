@@ -1,11 +1,10 @@
 package com.tts.reports.dto;
 
-import java.time.YearMonth;
-import java.util.Map;
+import java.util.List;
 
 import lombok.Builder;
 
 @Builder
-public record UserReportsDto(Long totalUsers, Double cumMonthlyAvg, Map<YearMonth, Long> monthlyReports) {
+public record UserReportsDto(Long totalUsers, Double cumMonthlyAvg, List<DataRecord> monthlyReports) {
 
 }

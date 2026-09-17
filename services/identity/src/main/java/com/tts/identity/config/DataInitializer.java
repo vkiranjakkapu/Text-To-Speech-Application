@@ -11,6 +11,7 @@ import com.tts.identity.entities.Address;
 import com.tts.identity.entities.Role;
 import com.tts.identity.entities.RoleType;
 import com.tts.identity.entities.User;
+import com.tts.identity.enums.UserGender;
 import com.tts.identity.repository.RoleRepository;
 import com.tts.identity.repository.UserRepository;
 
@@ -48,6 +49,7 @@ public class DataInitializer implements CommandLineRunner {
 					.firstName("System")
 					.lastName("Admin")
 					.email("admin@tts.com")
+					.gender(UserGender.MALE)
 					.password(passwordEncoder.encode("admin123"))
 					.address(address)
 					.enabled(true)

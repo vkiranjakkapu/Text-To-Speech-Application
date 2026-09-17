@@ -21,13 +21,13 @@ public class ReportsController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/metrics")
     public ResponseEntity<ApiResponseDto> synthesis() {
-        return ResponseEntity.ok(ApiResponseDto.builder().body(reportsService.getAllUsageMetrics()).build());
+        return ResponseEntity.ok(ApiResponseDto.builder().data(reportsService.getAllUsageMetrics()).build());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/history")
     public ResponseEntity<ApiResponseDto> requests() {
-        return ResponseEntity.ok(ApiResponseDto.builder().body(reportsService.getAllHistoryRecords()).build());
+        return ResponseEntity.ok(ApiResponseDto.builder().data(reportsService.getAllHistoryRecords()).build());
     }
 
 }

@@ -38,23 +38,31 @@ public class SpeechServiceImp implements SpeechService {
 
 		long remaining = utilization.getMaxLimit() - utilization.getUtilized();
 
-		if (((double) remaining / request.text().length()) > properties.getLimits().getMaxOverdraftLimit()) {
-			throw new BusinessException(BusinessExceptions.LIMIT_EXCEEDED,
-					"Your input text is exceeding(>" + properties.getLimits().getMaxOverdraftLimit()
-							+ "%) the available limit",
-					HttpStatus.CONTENT_TOO_LARGE);
-		}
-
 		if (remaining <= 0) {
-
 			String message = "Your Monthly Limit Exhausted.";
 
 			if (Math.abs(remaining) > 25) {
 				message += " You Have Already Exceeded Your Monthly Limit By "
 						+ Math.abs(remaining) + " Characters";
 			}
-			throw new BusinessException(BusinessExceptions.USAGE_LIMIT_EXHAUSTED, message.toString(),
+
+			throw new BusinessException(
+					BusinessExceptions.USAGE_LIMIT_EXHAUSTED,
+					message,
 					HttpStatus.TOO_MANY_REQUESTS);
+		}
+
+		double maxOverdraftPercentage = properties.getLimits().getMaxOverdraftLimit();
+
+		long maxAllowedLength = Math.round(
+				remaining * (1 + maxOverdraftPercentage / 100.0));
+
+		if (request.text().length() > maxAllowedLength) {
+			throw new BusinessException(
+					BusinessExceptions.LIMIT_EXCEEDED,
+					"Your input text exceeds the available monthly limit "
+							+ "including the allowed " + maxOverdraftPercentage + "% overdraft.",
+					HttpStatus.CONTENT_TOO_LARGE);
 		}
 
 		byte[] audio = ttsProvider.synthesize(

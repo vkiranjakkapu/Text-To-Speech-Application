@@ -8,7 +8,7 @@ management:
 services:
     uri:
         identity: http://tts-identity-service/identity/api/v1
-        transform: http://tts-transformer-service/transform/api/v1
+        transform: http://tts-transformer-service/speech/api/v1
         reports: http://tts-reports-service/reports/api/v1
 
 eureka:
@@ -47,6 +47,7 @@ platform:
     security:
         public-paths:
             - "/identity/api/v1/auth/**"
+            - "/identity/api/v1/users/register"
             - "/swagger-ui/**"
             - "/v3/api-docs/**"
         admin-paths:

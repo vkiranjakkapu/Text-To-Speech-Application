@@ -19,7 +19,7 @@ public class HistoryController {
 
     @GetMapping("/")
     public ResponseEntity<ApiResponseDto> getMySpeechHistory() {
-        return ResponseEntity.ok(ApiResponseDto.builder().body(historyService.getMyHistory()).build());
+        return ResponseEntity.ok(ApiResponseDto.builder().data(historyService.getMyHistory()).build());
     }
 
 }

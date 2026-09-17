@@ -21,7 +21,7 @@ public class DocumentsController {
 
     @PostMapping("/extract")
     public ResponseEntity<ApiResponseDto> extractText(@RequestParam MultipartFile file) {
-        return ResponseEntity.ok(ApiResponseDto.builder().body(documentService.extractText(file)).build());
+        return ResponseEntity.ok(ApiResponseDto.builder().data(documentService.extractText(file)).build());
     }
 
 }
