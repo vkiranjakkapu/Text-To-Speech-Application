@@ -25,6 +25,11 @@ public class SecurityException extends RuntimeException {
         this.definition = definition;
     }
 
+    public SecurityException(ErrorDefinition definition, String message) {
+        super(message);
+        this.definition = definition;
+    }
+
     public SecurityException(ErrorDefinition definition, String message, Throwable cause) {
         super(message, cause);
         this.definition = definition;

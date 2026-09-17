@@ -66,7 +66,7 @@ class UserService {
     }
 
     async deleteProfile<T>(
-        id: number,
+        id: string,
     ): Promise<ApiResponse<T> | ErrorResponse> {
         return apiClient({
             type: "delete",

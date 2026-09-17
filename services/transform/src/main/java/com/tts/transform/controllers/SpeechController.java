@@ -1,11 +1,13 @@
 package com.tts.transform.controllers;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,11 @@ public class SpeechController {
     @GetMapping("/voices")
     public ResponseEntity<ApiResponseDto> getVoices() {
         return ResponseEntity.ok(ApiResponseDto.builder().data(ttsProvider.getVoices()).build());
+    }
+
+    @GetMapping("/{speechId}/download")
+    public ResponseEntity<byte[]> downloadSpeech(@PathVariable UUID speechId) {
+        return ResponseEntity.ok(speechService.download(speechId));
     }
 
     @PostMapping("/synthesize")

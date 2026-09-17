@@ -19,6 +19,11 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>com.platform</groupId>
+			<artifactId>restclient</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.microsoft.cognitiveservices.speech</groupId>
 			<artifactId>client-sdk</artifactId>
 		</dependency>

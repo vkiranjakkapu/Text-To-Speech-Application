@@ -38,7 +38,7 @@ export default function AdminDashboard() {
                 setUserReports(monthlyUserReports?.monthlyReports ?? []);
                 return;
             }
-            ReportsService.getMetricsReports<DataRecord[]>(month).then(
+            ReportsService.getUserReports<DataRecord[]>(month).then(
                 (resp) => {
                     if (resp && !("errorMessage" in resp)) {
                         setUserReports(resp.data);
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
                         {usageMetrics?.monthlyUtilization.at(-1)?.value ?? 0}{" "}
                         <sub className="text-md">characters</sub>
                     </h1>
-                    <p className="capitalize">Monthly Synthesis</p>
+                    <p className="capitalize">This Month's Synthesis</p>
                     {/* <a href="#" className="text-sm text-style-secondary">Show Monthly Trend</a> */}
                 </div>
                 <div className="p-2">
@@ -158,7 +158,7 @@ export default function AdminDashboard() {
                     {/* <a href="#" className="text-sm text-style-secondary">Show Monthly Trend</a> */}
                 </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 *:h-80 *:p-4 *:flex *:flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 *:h-80 *:p-4 *:flex *:flex-col *:dark:bg-slate-50 *:dark:text-slate-600">
                 <div className="rounded border shadow-sm p-1 space-y-2 col-span-full">
                     {monthlyUserReports == null ? (
                         <SpinnerComponent />

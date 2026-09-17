@@ -6,4 +6,6 @@ public interface AzureBlobStorageService {
 
     byte[] download(String filePath);
 
+    void delete(String filePath);
+
 }

@@ -5,5 +5,5 @@ export const RoutePaths = {
     HISTORY: "/history",
     PROFILE: "/profile",
     USERS: "/users",
-    USER_DETAILS: "/profile/:userId",
-};
+    USER_DETAILS: "/users/:userId",
+} as const;

@@ -14,7 +14,7 @@ import {
 
 import { useEffect, useState, type SubmitEvent } from "react";
 import type { ApiResponse } from "../api/api";
-import Avatar from "../assets/undraw_reading-notes_dg9z.svg";
+import Avatar from "../assets/undraw_talking-on-the-phone_lc9v.svg";
 import usePrincipal, {
     AuthStatus,
     RoleType,
@@ -164,7 +164,7 @@ export default function NavbarComponent() {
 
     return (
         <>
-            <nav className="sticky py-3 md:p-6 border-b md:border-0">
+            <nav className="sticky py-3 md:p-6 border-b">
                 <div className="flex flex-wrap px-3 md:px-30 md:py-4 justify-between items-center gap-3">
                     <div className="flex items-center gap-2">
                         <img
@@ -381,7 +381,7 @@ export default function NavbarComponent() {
             </ModalComponent>
             <LoadingPortalComponent
                 isLoading={status === AuthStatus.INITIALIZING}
-                message="Preparing your dashboard."
+                message="Preparing your session."
             />
         </>
     );
