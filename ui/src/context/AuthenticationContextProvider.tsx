@@ -64,7 +64,6 @@ export default function AuthenticationContextProvider({
                     fetchProfile();
                 } else {
                     setStatus(AuthStatus.UNAUTHENTICATED);
-                    console.log(resp);
                 }
 
                 return resp;

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.platform.security.constants.SecurityConstants;
 import com.platform.security.properties.SecurityProperties;
+import com.platform.web.exception.SecurityExceptions;
 import com.tts.identity.dto.LoginRequestDto;
 import com.tts.identity.dto.LoginResponseDto;
 import com.tts.identity.dto.LogoutRequestDto;
@@ -17,6 +18,7 @@ import com.tts.identity.dto.RefreshTokenRequest;
 import com.tts.identity.dto.RefreshTokenResponse;
 import com.tts.identity.entities.RefreshToken;
 import com.tts.identity.entities.User;
+import com.tts.identity.exceptions.BusinessException;
 import com.tts.identity.exceptions.InvalidRefreshTokenException;
 import com.tts.identity.repository.RefreshTokenRepository;
 import com.tts.identity.services.AuthenticationService;
@@ -42,6 +44,11 @@ public class AuthenticationServiceImp implements AuthenticationService {
 						request.password()));
 
 		User user = (User) authenticate.getPrincipal();
+
+		if (user.isDeleted()) {
+			throw new BusinessException(SecurityExceptions.UNAUTHORIZED_ACCESS,
+					"Your account has been deleted from our records.");
+		}
 
 		String accessToken = jwtService.generateAccessToken(user);
 		String refreshTokenValue = jwtService.generateRefreshToken();
