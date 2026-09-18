@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
+import NavbarComponent from "../../components/Navbar";
 import usePrincipal, { AuthStatus } from "../../context/usePrincipal";
 import { RoutePaths } from "../../routes/RoutePaths";
 
@@ -13,5 +14,10 @@ export default function ProtectedLayout() {
         return <Navigate to={RoutePaths.HOME} />;
     }
 
-    return <Outlet />;
+    return (
+        <>
+            <NavbarComponent />
+            <Outlet />
+        </>
+    );
 }
