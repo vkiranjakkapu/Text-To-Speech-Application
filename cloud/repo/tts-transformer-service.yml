@@ -8,6 +8,12 @@ eureka:
         webclient:
             enabled: true
 
+spring:
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB
+
 azure:
     speech:
         key: ${AZURE_SPEECH_KEY}
@@ -23,8 +29,8 @@ azure:
 app:
     request:
         min-text-length: 55
-        max-text-length: 200
-        max-doctext-length: 500
+        max-text-length: 300
+        max-doctext-length: 300
     limits:
         max-monthly-limit: 10000
         max-overdraft-limit: 25.0 # as a % of the remaining limit

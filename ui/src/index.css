@@ -43,13 +43,22 @@
         @apply text-lg;
     }
 
-    :is(input, select, textarea) {
-        @apply w-full border p-2 py-1.5 rounded-lg;
+    :is(input, select, textarea):not(.form-group *) {
+        @apply w-full border rounded-lg px-2 py-1 outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1 focus:border-transparent dark:focus:ring-offset-primary;
     }
 
-    :is(input, select, textarea):not(.form-group-component *),
-    .form-group-component {
-        @apply px-2 py-1 outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1 focus:border-transparent dark:focus:ring-offset-primary;
+    select:not(.form-group *) {
+        @apply py-1.5;
+    }
+
+    .form-group {
+        @apply flex flex-wrap items-center justify-center outline-none focus-within:ring-2 focus-within:ring-primary/50 focus-within:ring-offset-1 focus-within:border-transparent;
+        & :is(input, select, textarea) {
+            @apply outline-none p-1 flex-1;
+        }
+        & textarea {
+            @apply p-0.5;
+        }
     }
 
     button {

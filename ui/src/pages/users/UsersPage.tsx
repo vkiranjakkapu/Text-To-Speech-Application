@@ -132,7 +132,11 @@ export default function UsersPage() {
 
     const deleteUser = useCallback(
         (user: UserProfile) => {
-            if (window.confirm("Are You Sure? You Want to delete '" + user.email + "'?")) {
+            if (
+                window.confirm(
+                    "Are You Sure? You Want to delete '" + user.email + "'?",
+                )
+            ) {
                 UserService.deleteProfile<{ status: boolean }>(user.id).then(
                     (resp) => {
                         if (resp && "errorMessage" in resp) {
@@ -244,7 +248,7 @@ export default function UsersPage() {
                             name="role"
                             emptyOption="User Role"
                             options={Object.keys(RoleType).map((role) => ({
-                                text: role,
+                                value: role,
                             }))}
                             required
                         ></SelectComponent>
@@ -319,7 +323,7 @@ export default function UsersPage() {
                             name="gender"
                             emptyOption="Gender"
                             options={Object.keys(UserGender).map((gender) => ({
-                                text: gender,
+                                value: gender,
                             }))}
                             required
                         />

@@ -16,8 +16,12 @@ public enum BusinessExceptions implements ErrorDefinition {
     MIN_LENGTH_REQUIRED("MIN_LENGTH_REQUIRED", "BUS-4002",
             "Min characters length should be provided to text synthesis.."),
     MAX_LENGTH_EXCEEDED("MAX_LENGTH_EXCEEDED", "BUS-4003", "Max characters length to convert to speech was exceeded."),
-    USAGE_LIMIT_EXHAUSTED("USAGE_LIMIT_EXHAUSTED", "BUS-4004", "Your Monthly Limit Exhausted for this month."),
-    LIMIT_EXCEEDED("LIMIT_EXCEEDED", "BUS-4005", "Your input text is exceeding the remainig limit");
+    DOCUMENT_TOO_LARGE("DOCUMENT_TOO_LARGE", "BUS-4004",
+            "Document size exceeded max allowed size."),
+    INVALID_DOCUMENT("INVALID_DOCUMENT", "BUS-4005",
+            "Document type not allowed for text extraction."),
+    USAGE_LIMIT_EXHAUSTED("USAGE_LIMIT_EXHAUSTED", "BUS-4006", "Your Monthly Limit Exhausted for this month."),
+    LIMIT_EXCEEDED("LIMIT_EXCEEDED", "BUS-4007", "Your input text is exceeding the remainig limit");
 
     private String errorName;
     private String errorCode;

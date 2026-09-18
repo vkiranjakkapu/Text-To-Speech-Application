@@ -1,13 +1,17 @@
 import type { ButtonHTMLAttributes } from "react";
 import type { IconProps } from "./commons";
-import SpinnerComponent from "./SpinnerComponent";
+import SpinnerComponent, {
+    type SpinnerComponentProps,
+} from "./SpinnerComponent";
 
 export type ActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     icon?: IconProps;
     customiseIcon?: string;
     customiseText?: string;
     text?: string;
-    loading?: boolean;
+    spinner?: SpinnerComponentProps & {
+        loading?: boolean;
+    };
 };
 
 export default function ActionButton({
@@ -15,7 +19,7 @@ export default function ActionButton({
     customiseIcon,
     customiseText,
     text,
-    loading = false,
+    spinner,
     ...props
 }: ActionButtonProps) {
     return (
@@ -23,8 +27,8 @@ export default function ActionButton({
             {...props}
             className={`flex items-center gap-1 ${props.disabled && `pointer-events-none opacity-70`} ${props.className}`}
         >
-            {loading ? (
-                <SpinnerComponent />
+            {spinner && spinner.loading ? (
+                <SpinnerComponent {...spinner} customize={`w-fit ${spinner.customize}`} />
             ) : (
                 Icon && <Icon className={`size-4 ${customiseIcon}`} />
             )}

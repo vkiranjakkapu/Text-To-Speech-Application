@@ -11,6 +11,7 @@ import com.tts.transform.dto.ApiResponseDto;
 import com.tts.transform.services.DocumentService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/speech/api/v1/documents")
@@ -18,6 +19,11 @@ import lombok.RequiredArgsConstructor;
 public class DocumentsController {
 
     private final DocumentService documentService;
+
+    @GetMapping("/support")
+    public ResponseEntity<ApiResponseDto> getSupportedDocumentTypes() {
+        return ResponseEntity.ok(ApiResponseDto.builder().data(documentService.getAllowedExtensions()).build());
+    }
 
     @PostMapping("/extract")
     public ResponseEntity<ApiResponseDto> extractText(@RequestParam MultipartFile file) {

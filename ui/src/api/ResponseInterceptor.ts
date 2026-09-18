@@ -39,7 +39,6 @@ export default function configureResponseInterceptor(api: AxiosInstance) {
             }
 
             if (error.response?.status === 401 && !originalRequest._retry) {
-
                 const isAuthEndpoint = AppConfig.PUBLIC_ENDPOINTS.some((path) =>
                     originalRequest.url?.includes(path),
                 );
@@ -71,12 +70,16 @@ export default function configureResponseInterceptor(api: AxiosInstance) {
                 }
 
                 try {
-                    const refreshUrl = `${AppConfig.IDENTITY_AUTH_URL}/auth/refresh`;
+                    const refreshUrl = `${AppConfig.IDENTITY_AUTH_URL}/refresh`;
                     const response = await api.post(refreshUrl, {
                         refreshToken,
                     });
 
                     const { accessToken, newRefreshToken } = response.data.data;
+
+                    console.log(response.data.data);
+                    console.log(accessToken);
+                    console.log(refreshToken);
 
                     TokenStorage.save(
                         accessToken,
