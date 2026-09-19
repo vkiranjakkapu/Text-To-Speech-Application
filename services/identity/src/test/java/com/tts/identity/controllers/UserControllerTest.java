@@ -35,6 +35,7 @@ import com.platform.security.model.DefaultAuthenticatedUser;
 import com.tts.identity.dto.AddressDto;
 import com.tts.identity.dto.CreateUserRequestDto;
 import com.tts.identity.dto.FetchUsersRequestDto;
+import com.tts.identity.dto.RegistrationRequest;
 import com.tts.identity.dto.UpdateUserRequest;
 import com.tts.identity.dto.UserResponse;
 import com.tts.identity.entities.RoleType;
@@ -199,6 +200,30 @@ class UserControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonMapper.writeValueAsString(request)))
 				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void register_ShouldReturn200() throws Exception {
+
+		RegistrationRequest request = new RegistrationRequest(
+				"newuser@test.com",
+				"John",
+				"Doe",
+				"password",
+				"password");
+
+		UserResponse response = response();
+
+		when(userService.register(any()))
+				.thenReturn(response);
+
+		mockMvc.perform(post("/identity/api/v1/users/register")
+				.param("email", request.email())
+				.param("firstName", request.firstName())
+				.param("lastName", request.lastName())
+				.param("password", request.password())
+				.param("confirmPassword", request.confirmPassword()))
+				.andExpect(status().isOk());
 	}
 
 	private CreateUserRequestDto createRequest() {

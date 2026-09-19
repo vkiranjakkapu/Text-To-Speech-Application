@@ -29,6 +29,7 @@ import com.tts.identity.dto.RefreshTokenRequest;
 import com.tts.identity.dto.RefreshTokenResponse;
 import com.tts.identity.entities.RefreshToken;
 import com.tts.identity.entities.User;
+import com.tts.identity.exceptions.BusinessException;
 import com.tts.identity.exceptions.InvalidRefreshTokenException;
 import com.tts.identity.repository.RefreshTokenRepository;
 import com.tts.identity.repository.UserRepository;
@@ -209,4 +210,40 @@ class AuthenticationServiceImpTest {
 				() -> authenticationService.logout(
 						new LogoutRequestDto("refresh-token")));
 	}
+
+	@Test
+	void login_ShouldThrow_WhenUserIsDeleted() {
+
+		LoginRequestDto request = new LoginRequestDto(
+				"deleted@test.com",
+				"password");
+
+		User deletedUser = User.builder()
+				.id(UUID.randomUUID())
+				.email("deleted@test.com")
+				.password("password")
+				.deleted(true)
+				.build();
+
+		Authentication authentication = mock(Authentication.class);
+
+		when(authenticationManager.authenticate(any()))
+				.thenReturn(authentication);
+
+		when(authentication.getPrincipal())
+				.thenReturn(deletedUser);
+
+		assertThrows(
+				BusinessException.class,
+				() -> authenticationService.login(request));
+
+		verify(authenticationManager).authenticate(any());
+
+		verify(jwtService, org.mockito.Mockito.never())
+				.generateAccessToken(any());
+
+		verify(refreshTokenRepository, org.mockito.Mockito.never())
+				.save(any());
+	}
+
 }
