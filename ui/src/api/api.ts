@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig } from "axios";
+import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 import { AppConfig } from "../config/AppConfig";
 import { handleErrorResponse } from "../utils/ErrorHandler";
 import configureRequestInterceptor from "./RequestInterceptor";
@@ -106,6 +106,24 @@ export async function apiClient<T>({
             statusCode: response.status,
         } as ApiResponse<T>;
     } catch (er) {
-        return handleErrorResponse(er);
+        const error = er as AxiosError;
+        const contentType =
+            (error.response?.headers["content-type"] as string) ??
+            "application/json";
+
+        if (contentType.includes("application/json") && error.response) {
+            const data = error.response.data;
+
+            // handling according to the responseType config set
+            if (data instanceof Blob) {
+                error.response.data = JSON.parse(await data.text());
+            } else if (typeof data === "string") {
+                error.response.data = JSON.parse(data);
+            } else {
+                error.response.data = data;
+            }
+        }
+
+        return handleErrorResponse(error);
     }
 }

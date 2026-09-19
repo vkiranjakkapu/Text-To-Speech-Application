@@ -61,8 +61,8 @@ public class SpeechServiceImp implements SpeechService {
 		if (request.text().length() > maxAllowedLength) {
 			throw new BusinessException(
 					BusinessExceptions.LIMIT_EXCEEDED,
-					"Your input text exceeds the available monthly limit "
-							+ "including the allowed " + maxOverdraftPercentage + "% overdraft.",
+					"Your input text exceeds the available monthly limit including the allowed "
+							+ maxOverdraftPercentage + "% overdraft.",
 					HttpStatus.CONTENT_TOO_LARGE);
 		}
 

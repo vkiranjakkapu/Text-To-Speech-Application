@@ -2,7 +2,6 @@ import { AxiosError } from "axios";
 import type { ErrorResponse } from "../api/api";
 
 export function handleErrorResponse(er: unknown): ErrorResponse {
-    console.error("API Error Captured:", er);
     const error = er as AxiosError;
 
     const serverData = (error.response?.data ?? {}) as Record<string, unknown>;

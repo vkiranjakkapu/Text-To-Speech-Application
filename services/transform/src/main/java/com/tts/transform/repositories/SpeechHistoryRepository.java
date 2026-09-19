@@ -11,8 +11,8 @@ public interface SpeechHistoryRepository extends JpaRepository<SpeechHistory, UU
 
     List<SpeechHistory> findAllByOwnerId(UUID userId);
 
-    List<SpeechHistory> findAllByIsDeletedFalse();
+    List<SpeechHistory> findAllByIsDeletedFalseOrderByCreatedAtDesc();
 
-    List<SpeechHistory> findAllByOwnerIdAndIsDeletedFalse(UUID userId);
+    List<SpeechHistory> findAllByOwnerIdAndIsDeletedFalseOrderByCreatedAtDesc(UUID userId);
 
 }
