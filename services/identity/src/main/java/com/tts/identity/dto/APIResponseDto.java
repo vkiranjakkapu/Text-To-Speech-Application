@@ -7,7 +7,7 @@ import com.tts.identity.enums.ResponseStatus;
 import lombok.Builder;
 
 @Builder
-public record APIResponseDto(ResponseStatus status, Object data, LocalDateTime timestamp) {
+public record APIResponseDto<T>(ResponseStatus status, T data, LocalDateTime timestamp) {
 
     public APIResponseDto {
         if (status == null) {
