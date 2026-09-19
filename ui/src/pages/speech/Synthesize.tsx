@@ -36,9 +36,8 @@ type VoiceOption = {
 };
 
 type VoiceSelection = {
-    text: string;
     language: string;
-    voice: string; // id
+    voice: string;
     style: string;
     rate: string | undefined;
     pitch: string | undefined;
@@ -96,8 +95,9 @@ export default function Synthesize() {
             });
     }, []);
 
+    const [inputText, setInputText] = useState("");
+    const [originalText, setOriginalText] = useState("");
     const [aiResult, setAiResult] = useState<string | null>(null);
-    const [inputText, setInputText] = useState<string | null>(null);
 
     function updateVoiceSelection<K extends keyof VoiceSelection>(
         field: K,
@@ -151,12 +151,8 @@ export default function Synthesize() {
             .then((resp) => {
                 if (resp && !("errorMessage" in resp)) {
                     setInputText(resp.data);
-                    if (
-                        !voiceSelection.text ||
-                        voiceSelection.text.length == 0
-                    ) {
-                        updateVoiceSelection("text", resp.data);
-                    }
+                    setOriginalText(resp.data);
+                    setAiResult(null);
                 } else {
                     setNotifications("docUpload", {
                         type: "error",
@@ -204,48 +200,52 @@ export default function Synthesize() {
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
     function synthesizeTextToSpeech() {
-        if (validRequest()) {
-            setSynthesisInProgress(true);
-            setNotifications("synthesis", null);
-
-            SpeechService.synthesise<Blob>(voiceSelection)
-                .then((resp) => {
-                    if (resp && !("errorMessage" in resp)) {
-                        const blob = resp.data as Blob;
-
-                        const url = URL.createObjectURL(blob);
-
-                        // Remove previous URL
-                        setAudioUrl((prev) => {
-                            if (prev) {
-                                URL.revokeObjectURL(prev);
-                            }
-                            return url;
-                        });
-                    } else {
-                        setNotifications("synthesis", {
-                            type: "error",
-                            messages: [resp.errorMessage],
-                        });
-                    }
-                })
-                .finally(() => {
-                    setSynthesisInProgress(false);
-                });
+        if (!validRequest()) {
+            return;
         }
+
+        setSynthesisInProgress(true);
+        setNotifications("synthesis", null);
+
+        const request = {
+            ...voiceSelection,
+            text: inputText,
+        };
+
+        SpeechService.synthesise<Blob>(request)
+            .then((resp) => {
+                if (resp && !("errorMessage" in resp)) {
+                    const blob = resp.data as Blob;
+                    const url = URL.createObjectURL(blob);
+
+                    setAudioUrl((prev) => {
+                        if (prev) {
+                            URL.revokeObjectURL(prev);
+                        }
+                        return url;
+                    });
+                } else {
+                    setNotifications("synthesis", {
+                        type: "error",
+                        messages: [resp.errorMessage],
+                    });
+                }
+            })
+            .finally(() => {
+                setSynthesisInProgress(false);
+            });
     }
 
     function validRequest() {
         setNotifications("synthesis", null);
+
         const errors = [];
 
-        if (!voiceSelection.text || voiceSelection.text.length == 0) {
+        if (!inputText || inputText.length === 0) {
             errors.push("Text for synthesis can't be empty");
-        } else if (voiceSelection.text.length > MAX_INPUT_TEXT_LENGTH) {
+        } else if (inputText.length > MAX_INPUT_TEXT_LENGTH) {
             errors.push(
-                "Input text can't exceed " +
-                    MAX_INPUT_TEXT_LENGTH +
-                    " characters",
+                `Input text can't exceed ${MAX_INPUT_TEXT_LENGTH} characters`,
             );
         }
 
@@ -262,7 +262,7 @@ export default function Synthesize() {
             messages: errors,
         });
 
-        return errors.length == 0;
+        return errors.length === 0;
     }
 
     return (
@@ -384,15 +384,9 @@ export default function Synthesize() {
                                     icon={ArrowUturnLeftIcon}
                                     text="undo"
                                     title="Restore Original Text"
-                                    disabled={
-                                        !aiResult ||
-                                        (voiceSelection.text &&
-                                            voiceSelection.text.length == 0) ||
-                                        !inputText ||
-                                        inputText.length == 0
-                                    }
+                                    disabled={!aiResult || !originalText}
                                     onClick={() => {
-                                        setInputText(voiceSelection.text);
+                                        setInputText(originalText);
                                     }}
                                 />
                                 <ActionButton
@@ -402,7 +396,7 @@ export default function Synthesize() {
                                     title="Apply AI Result"
                                     disabled={!aiResult}
                                     onClick={() => {
-                                        setInputText(aiResult);
+                                        setInputText(aiResult!);
                                     }}
                                 />
                             </div>
@@ -417,10 +411,8 @@ export default function Synthesize() {
                             className={`border-0 rounded-none ${enhancementInProgress ? `animate-pulse` : ``}`}
                             onChange={(e) => {
                                 setInputText(e.target.value);
-                                setVoiceSelection((prev) => ({
-                                    ...prev,
-                                    text: e.target.value,
-                                }));
+                                setOriginalText(e.target.value);
+                                setAiResult(null);
                             }}
                             value={inputText ?? ""}
                         />
