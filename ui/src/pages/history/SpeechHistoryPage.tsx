@@ -1,4 +1,8 @@
-import { ArrowDownCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+    ArrowDownCircleIcon,
+    ClipboardDocumentListIcon,
+    TrashIcon,
+} from "@heroicons/react/24/outline";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import usePagination from "../../components/pagination/usePagination";
 import TableComponent, {
@@ -143,14 +147,27 @@ export default function SpeechHistoryPage() {
                         : []),
                     {
                         key: "text",
-                        alias: "input",
+                        alias: "text",
                         customiseColumn: "max-w-[45ch] truncate",
                     },
-                    { key: "createdAt", alias: "Created" },
                     { key: "voice" },
+                    { key: "createdAt", alias: "Created" },
                 ] as HeaderAlias<HistoryTableData>[]
             }
             actionEvents={[
+                {
+                    title: "Copy text",
+                    clickEvent: {
+                        icon: ClipboardDocumentListIcon,
+                        className: "text-secondary dark:text-primary",
+                        onClick(item) {
+                            navigator.clipboard.writeText(item.text);
+                            window.alert(
+                                `Below text has been copied to your clipboard. \n\n ${item.text}`,
+                            );
+                        },
+                    },
+                },
                 {
                     title: "Download",
                     clickEvent: {
