@@ -29,6 +29,7 @@ import com.platform.security.model.AuthenticatedUser;
 import com.platform.security.model.DefaultAuthenticatedUser;
 import com.tts.identity.dto.AddressDto;
 import com.tts.identity.dto.CreateUserRequestDto;
+import com.tts.identity.dto.RegistrationRequest;
 import com.tts.identity.dto.UpdateUserRequest;
 import com.tts.identity.dto.UserResponse;
 import com.tts.identity.entities.Address;
@@ -36,6 +37,7 @@ import com.tts.identity.entities.Role;
 import com.tts.identity.entities.RoleType;
 import com.tts.identity.entities.User;
 import com.tts.identity.enums.UserGender;
+import com.tts.identity.exceptions.BusinessException;
 import com.tts.identity.exceptions.EmailAlreadyUsedException;
 import com.tts.identity.exceptions.ForbiddenException;
 import com.tts.identity.exceptions.ResourceNotFoundException;
@@ -367,6 +369,78 @@ class UserServiceImplTest {
 		assertThrows(
 				ResourceNotFoundException.class,
 				() -> userService.deleteUser(USER_ID));
+
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	void register_ShouldCreateUserSuccessfully() {
+
+		RegistrationRequest request = new RegistrationRequest(
+				"newuser@test.com",
+				"John",
+				"Doe",
+				"password",
+				"password");
+
+		Role userRole = new Role();
+		userRole.setName(RoleType.USER);
+
+		when(roleRepository.findByName(RoleType.USER))
+				.thenReturn(Optional.of(userRole));
+
+		when(passwordEncoder.encode("password"))
+				.thenReturn("encoded-password");
+
+		when(userRepository.save(any(User.class)))
+				.thenAnswer(invocation -> invocation.getArgument(0));
+
+		UserResponse response = userService.register(request);
+
+		assertNotNull(response);
+		assertEquals("newuser@test.com", response.email());
+		assertEquals("John", response.firstName());
+		assertEquals("Doe", response.lastName());
+
+		verify(roleRepository).findByName(RoleType.USER);
+		verify(passwordEncoder).encode("password");
+		verify(userRepository).save(any(User.class));
+	}
+
+	@Test
+	void register_ShouldThrow_WhenPasswordsDoNotMatch() {
+
+		RegistrationRequest request = new RegistrationRequest(
+				"newuser@test.com",
+				"John",
+				"Doe",
+				"password",
+				"different-password");
+
+		assertThrows(
+				BusinessException.class,
+				() -> userService.register(request));
+
+		verify(roleRepository, never()).findByName(any());
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	void register_ShouldThrow_WhenUserRoleDoesNotExist() {
+
+		RegistrationRequest request = new RegistrationRequest(
+				"newuser@test.com",
+				"John",
+				"Doe",
+				"password",
+				"password");
+
+		when(roleRepository.findByName(RoleType.USER))
+				.thenReturn(Optional.empty());
+
+		assertThrows(
+				ResourceNotFoundException.class,
+				() -> userService.register(request));
 
 		verify(userRepository, never()).save(any());
 	}
