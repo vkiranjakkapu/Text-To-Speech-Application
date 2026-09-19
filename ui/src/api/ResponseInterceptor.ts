@@ -77,10 +77,6 @@ export default function configureResponseInterceptor(api: AxiosInstance) {
 
                     const { accessToken, newRefreshToken } = response.data.data;
 
-                    console.log(response.data.data);
-                    console.log(accessToken);
-                    console.log(refreshToken);
-
                     TokenStorage.save(
                         accessToken,
                         newRefreshToken || refreshToken,

@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.platform.web.model.ErrorResponse;
 import com.tts.transform.dto.ApiResponseDto;
-import com.tts.transform.dto.DocumentSpeechResponseDto;
 import com.tts.transform.dto.SynthesizeRequest;
 import com.tts.transform.enums.BusinessExceptions;
-import com.tts.transform.enums.ResponseStatus;
 import com.tts.transform.enums.SynthesisType;
 import com.tts.transform.exceptions.BusinessException;
 import com.tts.transform.properties.DefaultProperties;
@@ -49,8 +46,9 @@ public class SpeechController {
 
     @PostMapping("/synthesize")
     public ResponseEntity<?> synthesize(@Valid @RequestBody SynthesizeRequest request) {
+        String text = request.text().replaceAll("\\R+", " ").trim();
 
-        if (request.text().length() < properties.getRequest().getMinTextLength()) {
+        if (text.length() < properties.getRequest().getMinTextLength()) {
             throw new BusinessException(BusinessExceptions.MIN_LENGTH_REQUIRED,
                     "Text for Synthesis should atleast be " + properties.getRequest().getMinTextLength()
                             + " characters length.",
@@ -65,32 +63,18 @@ public class SpeechController {
             }
         }).orElse(properties.getRequest().getMaxTextLength());
 
-        if (request.text().length() > maxLength) {
+        if (text.length() > maxLength) {
             throw new BusinessException(BusinessExceptions.MAX_LENGTH_EXCEEDED,
                     "Text for Synthesis can't exceed the length of " + properties.getRequest().getMaxTextLength()
                             + " characters.",
                     HttpStatus.CONTENT_TOO_LARGE);
         }
 
-        try {
-            byte[] synthesize = speechService.synthesize(request);
+        byte[] synthesize = speechService.synthesize(request);
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, "audio/mpeg")
-                    .body(synthesize);
-        } catch (BusinessException e) {
-            if (e.getDefinition().equals(BusinessExceptions.LIMIT_EXCEEDED)) {
-                return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE).body(ApiResponseDto.builder()
-                        .status(ResponseStatus.ERROR)
-                        .data(DocumentSpeechResponseDto.builder()
-                                .error(new ErrorResponse(e.getDefinition(), e.getMessage()))
-                                .suggestion("You can use our AI Service to reduce the text size.")
-                                .text(request.text())
-                                .build())
-                        .build());
-            }
-            throw e;
-        }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "audio/mpeg")
+                .body(synthesize);
     }
 
 }

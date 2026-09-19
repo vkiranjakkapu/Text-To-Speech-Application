@@ -146,7 +146,7 @@ export default function SpeechHistoryPage() {
                         alias: "input",
                         customiseColumn: "max-w-[45ch] truncate",
                     },
-                    { key: "language", alias: "lang" },
+                    { key: "createdAt", alias: "Created" },
                     { key: "voice" },
                 ] as HeaderAlias<HistoryTableData>[]
             }

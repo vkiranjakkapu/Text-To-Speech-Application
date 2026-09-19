@@ -24,7 +24,6 @@ import DocumentService from "../../services/DocumentService";
 import SpeechService, {
     EnhancementType,
     SynthesisType,
-    type SynthesisResponse,
 } from "../../services/SpeechService";
 
 type VoiceOption = {
@@ -50,7 +49,7 @@ type VoiceSelection = {
 export default function Synthesize() {
     const [allowedTypes, setAllowedTypes] = useState<string[]>([]);
     const [voiceOptions, setVoiceOptions] = useState<VoiceOption[]>([]);
-    const MAX_INPUT_TEXT_LENGTH = 500;
+    const MAX_INPUT_TEXT_LENGTH = 300;
 
     const [voiceSelection, setVoiceSelection] = useState<VoiceSelection>(
         {} as VoiceSelection,
@@ -131,11 +130,22 @@ export default function Synthesize() {
 
     function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
         if (!e.target.files || e.target.files.length === 0) return;
+
+        const doc = e.target.files[0];
+
+        if (!allowedTypes.includes("." + (doc.name.split(".").at(-1) ?? ""))) {
+            setNotifications("docUpload", {
+                type: "error",
+                messages: ["Document type not allowed."],
+            });
+            return;
+        }
+
         setDocUploadInProgress(true);
         setNotifications("docUpload", null);
 
         const payload = new FormData();
-        payload.append("file", e.target.files[0]);
+        payload.append("file", doc);
 
         DocumentService.extractDocContent<string>(payload)
             .then((resp) => {
@@ -198,23 +208,9 @@ export default function Synthesize() {
             setSynthesisInProgress(true);
             setNotifications("synthesis", null);
 
-            SpeechService.synthesise<SynthesisResponse | Blob>(voiceSelection)
+            SpeechService.synthesise<Blob>(voiceSelection)
                 .then((resp) => {
                     if (resp && !("errorMessage" in resp)) {
-                        if (resp.statusCode == 413) {
-                            const response =
-                                resp as unknown as SynthesisResponse;
-
-                            setNotifications("synthesis", {
-                                type: "info",
-                                messages: [
-                                    response.suggestion,
-                                    // `ERR::${response.error.errorMessage}`,
-                                ],
-                            });
-                            return;
-                        }
-
                         const blob = resp.data as Blob;
 
                         const url = URL.createObjectURL(blob);
@@ -240,18 +236,25 @@ export default function Synthesize() {
     }
 
     function validRequest() {
+        setNotifications("synthesis", null);
         const errors = [];
 
         if (!voiceSelection.text || voiceSelection.text.length == 0) {
-            errors.push("Input text can't be empty.");
+            errors.push("Text for synthesis can't be empty");
+        } else if (voiceSelection.text.length > MAX_INPUT_TEXT_LENGTH) {
+            errors.push(
+                "Input text can't exceed " +
+                    MAX_INPUT_TEXT_LENGTH +
+                    " characters",
+            );
         }
 
         if (!voiceSelection.language) {
-            errors.push("Language is required to synthesize.");
+            errors.push("Language is required to synthesize");
         }
 
         if (!voiceSelection.voice) {
-            errors.push("Voice is required to synthesize.");
+            errors.push("Voice is required to synthesize");
         }
 
         setNotifications("synthesis", {
@@ -333,7 +336,7 @@ export default function Synthesize() {
                     )}
                     <div className="flex flex-col border rounded-md p-1 gap-1.5 form-group *:w-full">
                         {/* AI Options */}
-                        <div className="bg-primary/10 border flex flex-wrap justify-between gap-2 p-1 rounded">
+                        <div className="bg-primary/20 border flex flex-wrap justify-between gap-2 p-1 rounded">
                             <div className="align-middle inline-flex flex-wrap rounded-sm overflow-hidden divide-x divide-white dark:divide-slate-900">
                                 <ActionButton
                                     className="p-0.5 px-1.5 rounded-none btn-primary"
@@ -344,6 +347,9 @@ export default function Synthesize() {
                                             EnhancementType.ENHANCE,
                                         );
                                     }}
+                                    disabled={
+                                        !inputText || inputText.length == 0
+                                    }
                                 />
                                 <ActionButton
                                     className="p-0.5 px-1.5 rounded-none btn-primary"
@@ -354,6 +360,9 @@ export default function Synthesize() {
                                             EnhancementType.SUMMARISE,
                                         );
                                     }}
+                                    disabled={
+                                        !inputText || inputText.length == 0
+                                    }
                                 />
                                 <ActionButton
                                     className="p-0.5 px-1.5 rounded-none btn-primary"
@@ -364,11 +373,14 @@ export default function Synthesize() {
                                             EnhancementType.REDUCE,
                                         );
                                     }}
+                                    disabled={
+                                        !inputText || inputText.length == 0
+                                    }
                                 />
                             </div>
                             <div className="align-middle inline-flex flex-wrap rounded-sm overflow-hidden divide-x divide-white dark:divide-slate-900">
                                 <ActionButton
-                                    className="p-0.5 px-1.5 rounded-none shadow-none btn-secondary uppercase text-xs"
+                                    className="p-0.5 px-1.5 rounded-none shadow-none btn-primary uppercase text-xs"
                                     icon={ArrowUturnLeftIcon}
                                     text="undo"
                                     title="Restore Original Text"
@@ -384,7 +396,7 @@ export default function Synthesize() {
                                     }}
                                 />
                                 <ActionButton
-                                    className="p-0.5 px-1.5 rounded-none shadow-none btn-secondary uppercase text-xs"
+                                    className="p-0.5 px-1.5 rounded-none shadow-none btn-primary uppercase text-xs"
                                     icon={CursorArrowRaysIcon}
                                     text="use ai result"
                                     title="Apply AI Result"
@@ -422,8 +434,17 @@ export default function Synthesize() {
                                 )}
                             </div>
                             <p className="text-end">
-                                {inputText?.length ?? 0}/300{" "}
-                                <sub>(characters left)</sub>
+                                <span
+                                    className={
+                                        (inputText?.length ?? 0) >
+                                        MAX_INPUT_TEXT_LENGTH
+                                            ? `text-rose-400`
+                                            : ``
+                                    }
+                                >
+                                    {inputText?.length ?? 0}
+                                </span>
+                                /{MAX_INPUT_TEXT_LENGTH}
                             </p>
                         </div>
                     </div>

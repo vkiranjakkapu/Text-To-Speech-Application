@@ -11,10 +11,11 @@ class SpeechService {
             payload,
             rawResponse: true,
             config: {
-                responseType: "blob"
-            }
+                responseType: "blob",
+            },
         });
     }
+
     async getVoiceOptions<T>(): Promise<ApiResponse<T> | ErrorResponse> {
         return apiClient({
             type: "get",
@@ -39,12 +40,6 @@ class SpeechService {
 }
 
 export default new SpeechService();
-
-export type SynthesisResponse = {
-    error: ErrorResponse;
-    suggestion: string;
-    text: string;
-};
 
 export const SynthesisType = {
     TEXT: "TEXT",

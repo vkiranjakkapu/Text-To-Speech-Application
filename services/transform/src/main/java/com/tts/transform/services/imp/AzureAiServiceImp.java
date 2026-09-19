@@ -51,12 +51,15 @@ public class AzureAiServiceImp implements AzureAiService {
 				.model(deployment)
 				.input("""
 						Resize the following text to %d characters length for natural
-						spoken delivery. Preserve its meaning.
+						spoken delivery. Preserve its meaning, but if not possible, 
+						club and summarise wherever possible to reach the required length.
+						Remove special characters wherever possible.
 						Do not add new information.
 
 						Text:
 						%s
-						""".formatted(length, text))
+						"""
+						.formatted(length, text))
 				.build();
 
 		return getResponse(createParams);

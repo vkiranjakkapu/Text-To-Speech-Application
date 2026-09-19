@@ -45,7 +45,7 @@ public class SpeechHistoryServiceImp implements SpeechHistoryService {
 
     @Override
     public List<SpeechHistory> getMyHistory() {
-        return historyRepository.findAllByOwnerIdAndIsDeletedFalse(currentUser.userId());
+        return historyRepository.findAllByOwnerIdAndIsDeletedFalseOrderByCreatedAtDesc(currentUser.userId());
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SpeechHistoryServiceImp implements SpeechHistoryService {
 
     @Override
     public List<SpeechHistoryDto> getAllHistoryRecordsMap() {
-        List<SpeechHistory> allRecords = historyRepository.findAllByIsDeletedFalse();
+        List<SpeechHistory> allRecords = historyRepository.findAllByIsDeletedFalseOrderByCreatedAtDesc();
         Set<UUID> allUserIds = allRecords.stream().map(rec -> rec.getOwnerId()).collect(Collectors.toSet());
         Map<UUID, UserResponseDto> allUsers = identityService.getAllUsersByIds(allUserIds);
         return allRecords.stream().map(rec -> mapToResponse(rec, allUsers.get(rec.getOwnerId()))).toList();

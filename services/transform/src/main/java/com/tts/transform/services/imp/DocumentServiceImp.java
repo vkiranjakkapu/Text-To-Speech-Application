@@ -75,7 +75,7 @@ public class DocumentServiceImp implements DocumentService {
         }
 
         try (InputStream inputStream = file.getInputStream()) {
-            return tika.parseToString(inputStream);
+            return tika.parseToString(inputStream).replaceAll("\\R+", " ").trim();
         } catch (IOException | TikaException e) {
             throw new BusinessException(
                     BusinessExceptions.DOCUMENT_EXTRACTION_ERROR,
